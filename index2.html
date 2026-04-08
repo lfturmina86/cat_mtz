@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo Virtual - MATREZAN</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+
+    <style>
+        body { font-family: 'Lato', sans-serif; background-color: #f8f8f8; color: #333; }
+        h1, h2, h3, .serif-font { font-family: 'Playfair Display', serif; }
+        .wood-accent { color: #8B5A2B; }
+        .bg-wood { background-color: #8B5A2B; }
+        .text-wood { color: #8B5A2B; }
+        
+        .product-card { transition: all 0.3s ease; }
+        .product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        
+        .modal { transition: opacity 0.25s ease; }
+        body.modal-active { overflow-y: hidden; }
+
+        .nav-scroll::-webkit-scrollbar { height: 6px; }
+        .nav-scroll::-webkit-scrollbar-track { background: #f3f4f6; border-radius: 10px; }
+        .nav-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .nav-scroll::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        .table-scroll::-webkit-scrollbar { height: 6px; width: 6px; }
+        .table-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 6px; }
+        
+        /* Ocultar scrollbar nas miniaturas da galeria */
+        .thumb-scroll::-webkit-scrollbar { height: 4px; }
+        .thumb-scroll::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 4px; }
+
+        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #8B5A2B; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="text-2xl font-bold serif-font text-gray-800">
+                Coleção Matrezan<span class="wood-accent">.2026</span>
+            </div>
+            <a href="catalogo.pdf" target="_blank" class="hidden sm:flex items-center text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
+                <i class="fas fa-download mr-2"></i> Baixar Catálogo Virtual
+            </a>
+            <a href="catalogo.pdf" target="_blank" class="sm:hidden text-gray-600 hover:text-gray-900">
+                <i class="fas fa-download text-xl"></i>
+            </a>
+        </div>
+    </header>
+
+    <div class="bg-gray-900 text-white py-16 px-4 relative overflow-hidden">
+        <div class="absolute inset-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center"></div>
+        <div class="container mx-auto relative z-10 text-center">
+            <h1 class="text-4xl md:text-6xl font-bold mb-4">Lançamentos 2026</h1>
+            <p class="text-xl text-gray-300 max-w-2xl mx-auto font-light">
+                Design orgânico, materiais nobres e a essência da marcenaria contemporânea.
+            </p>
+        </div>
+    </div>
+
+    <div class="bg-white border-b sticky top-[68px] z-40 shadow-sm">
+        <div class="container mx-auto px-4">
+            <nav id="categoryNav" class="flex space-x-3 overflow-x-auto pt-4 pb-3 nav-scroll items-center">
+                <button onclick="filterProducts('all')" class="cat-btn whitespace-nowrap px-5 py-2 rounded-full bg-gray-900 text-white text-sm font-medium transition-colors" data-cat="all">TODOS</button>
+                <button onclick="filterProducts('mesas_jantar')" class="cat-btn whitespace-nowrap px-5 py-2 rounded-full border border-gray-300 hover:border-gray-900 text-gray-700 text-sm font-medium transition-colors" data-cat="mesas_jantar">MESAS DE JANTAR</button>
+                <button onclick="filterProducts('cadeiras_jantar')" class="cat-btn whitespace-nowrap px-5 py-2 rounded-full border border-gray-300 hover:border-gray-900 text-gray-700 text-sm font-medium transition-colors" data-cat="cadeiras_jantar">CADEIRAS DE JANTAR</button>
+                <button onclick="filterProducts('poltronas')" class="cat-btn whitespace-nowrap px-5 py-2 rounded-full border border-gray-300 hover:border-gray-900 text-gray-700 text-sm font-medium transition-colors" data-cat="poltronas">POLTRONAS</button>
+                <button onclick="filterProducts('mesas_bistro')" class="cat-btn whitespace-nowrap px-5 py-2 rounded-full border border-gray-300 hover:border-gray-900 text-gray-700 text-sm font-medium transition-colors" data-cat="mesas_bistro">MESAS BISTRÔ</button>
+                <button onclick="filterProducts('banquetas')" class="cat-btn whitespace-nowrap px-5 py-2 rounded-full border border-gray-300 hover:border-gray-900 text-gray-700 text-sm font-medium transition-colors" data-cat="banquetas">BANQUETAS</button>
+                <button onclick="filterProducts('mesas_centro_laterais')" class="cat-btn whitespace-nowrap px-5 py-2 rounded-full border border-gray-300 hover:border-gray-900 text-gray-700 text-sm font-medium transition-colors" data-cat="mesas_centro_laterais">MESAS DE CENTRO/LATERAIS</button>
+                <button onclick="filterProducts('consoles_aparadores')" class="cat-btn whitespace-nowrap px-5 py-2 rounded-full border border-gray-300 hover:border-gray-900 text-gray-700 text-sm font-medium transition-colors" data-cat="consoles_aparadores">CONSOLES/APARADORES</button>
+                <button onclick="filterProducts('bancos_puffs')" class="cat-btn whitespace-nowrap px-5 py-2 rounded-full border border-gray-300 hover:border-gray-900 text-gray-700 text-sm font-medium transition-colors" data-cat="bancos_puffs">BANCOS/PUFFS</button>
+                <button onclick="filterProducts('bares')" class="cat-btn whitespace-nowrap px-5 py-2 rounded-full border border-gray-300 hover:border-gray-900 text-gray-700 text-sm font-medium transition-colors" data-cat="bares">BARES</button>
+                <button onclick="filterProducts('mesas_apoio')" class="cat-btn whitespace-nowrap px-5 py-2 rounded-full border border-gray-300 hover:border-gray-900 text-gray-700 text-sm font-medium transition-colors" data-cat="mesas_apoio">MESAS DE APOIO</button>
+                <button onclick="filterProducts('balcoes_adega')" class="cat-btn whitespace-nowrap px-5 py-2 rounded-full border border-gray-300 hover:border-gray-900 text-gray-700 text-sm font-medium transition-colors" data-cat="balcoes_adega">BALCÕES/ADEGA</button>
+            </nav>
+        </div>
+    </div>
+
+    <main class="container mx-auto px-4 py-8 mb-12 flex-grow">
+        <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 min-h-[300px]">
+            <div class="col-span-full flex flex-col items-center justify-center py-20 text-gray-500">
+                <div class="loader mb-4"></div>
+                <p>Sincronizando catálogo...</p>
+            </div>
+        </div>
+    </main>
+
+    <div id="productModal" class="fixed inset-0 z-50 hidden opacity-0 pointer-events-none modal">
+        <div class="absolute inset-0 bg-black bg-opacity-75 transition-opacity" onclick="closeModal()"></div>
+        
+        <div class="flex items-center justify-center min-h-screen px-4 py-4">
+            <div class="bg-white rounded-lg shadow-2xl max-w-5xl w-full max-h-[90vh] overflow-hidden relative z-10 transform transition-transform scale-95 flex flex-col md:flex-row">
+                
+                <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-900 z-20 bg-white rounded-full w-8 h-8 flex items-center justify-center shadow">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+
+                <div class="bg-gray-50 md:w-5/12 p-6 flex flex-col items-center justify-start relative border-r border-gray-100 min-h-[300px] overflow-y-auto">
+                    
+                    <div class="w-full aspect-square relative flex items-center justify-center bg-white rounded-lg shadow-sm overflow-hidden p-4 mb-4">
+                        <img id="modalImg" src="" alt="Produto" class="w-full h-full object-contain mix-blend-multiply transition-opacity duration-300">
+                        <video id="modalVideo" class="hidden w-full h-full object-contain" controls loop playsinline></video>
+                        <span id="modalRefTag" class="hidden absolute bottom-4 left-4 bg-white px-3 py-1 text-xs font-bold shadow rounded border border-gray-100 text-gray-800"></span>
+                    </div>
+
+                    <div id="modalThumbnails" class="flex gap-3 overflow-x-auto w-full justify-center min-h-[70px] py-2 px-1 thumb-scroll">
+                        </div>
+
+                </div>
+
+                <div class="md:w-7/12 flex flex-col max-h-[90vh]">
+                    <div class="p-8 pb-4 border-b border-gray-100 flex-shrink-0">
+                        <div class="mb-1">
+                            <span id="modalCategory" class="text-xs font-bold tracking-widest text-wood uppercase"></span>
+                        </div>
+                        <h2 id="modalTitle" class="text-3xl font-bold mb-2 serif-font text-gray-900"></h2>
+                        <p id="modalDesc" class="text-gray-500 text-sm leading-relaxed"></p>
+                    </div>
+
+                    <div class="p-8 pt-4 overflow-y-auto table-scroll flex-grow">
+                        <h4 class="text-sm font-bold text-gray-700 mb-4 uppercase tracking-wider">Tamanhos e Referências</h4>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm text-gray-600 border-collapse min-w-[400px]">
+                                <thead>
+                                    <tr class="border-b-2 border-gray-200 text-gray-900">
+                                        <th class="pb-2 font-semibold pl-2">Ref.</th>
+                                        <th class="pb-2 font-semibold">Dimensões Base</th>
+                                        <th class="pb-2 font-semibold">Formato</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tableReferencesBody">
+                                    </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="p-6 bg-gray-50 border-t border-gray-100 flex-shrink-0">
+                        <button onclick="popTechModalComprehensive()" class="w-full bg-gray-900 text-white py-3 rounded hover:bg-gray-800 transition font-medium text-center inline-flex justify-center items-center">
+                            <i class="fas fa-info-circle mr-2"></i> Mais Informações Técnicas
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="techModal" class="fixed inset-0 z-[60] hidden opacity-0 pointer-events-none modal">
+        <div class="absolute inset-0 bg-black bg-opacity-40 backdrop-blur-sm transition-opacity" onclick="closeTechModal()"></div>
+        <div class="flex items-center justify-center min-h-screen px-4 py-4">
+            <div class="bg-white rounded-lg shadow-2xl max-w-5xl w-full max-h-[90vh] relative z-10 transform transition-transform scale-95 flex flex-col">
+                <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50 rounded-t-lg">
+                    <div>
+                        <p class="text-xs font-bold tracking-widest text-wood uppercase mb-1">Ficha Técnica Integral</p>
+                        <h3 class="text-2xl font-bold serif-font text-gray-900" id="techTitle">Detalhes e Especificações</h3>
+                    </div>
+                    <button onclick="closeTechModal()" class="text-gray-400 hover:text-gray-900 bg-white rounded-full w-8 h-8 flex items-center justify-center shadow-sm border border-gray-200">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                <div class="p-8 overflow-y-auto table-scroll flex-grow">
+                    <div class="mb-10 pb-6 border-b border-gray-100">
+                        <h4 class="text-sm font-bold text-gray-700 mb-4 uppercase tracking-wider">Informações Logísticas</h4>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm text-gray-600 border-collapse min-w-[500px]">
+                                <thead>
+                                    <tr class="border-b-2 border-gray-200 text-gray-900 bg-gray-50">
+                                        <th class="py-2 pl-3 font-semibold rounded-tl-lg">Ref.</th>
+                                        <th class="py-2 font-semibold text-center">Peso Líq.</th>
+                                        <th class="py-2 font-semibold text-center">Peso Bruto</th>
+                                        <th class="py-2 font-semibold text-center">Cubagem</th>
+                                        <th class="py-2 font-semibold text-center rounded-tr-lg">Volumes</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="techTechTableBody" class="divide-y divide-gray-100"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="mb-10 pb-6 border-b border-gray-100 flex flex-col lg:flex-row gap-8">
+                        <div class="lg:w-1/3 p-4 bg-gray-50 rounded-lg flex items-center justify-center border border-gray-100 min-h-[250px]">
+                            <img id="techDimImg" src="" onerror="this.src='https://placehold.co/400x300/f3f4f6/8B5A2B?text=Sem+Croqui'" alt="Croqui" class="w-full h-full object-contain mix-blend-multiply">
+                        </div>
+                        <div class="lg:w-2/3 overflow-x-auto">
+                            <h4 class="text-sm font-bold text-gray-700 mb-4 uppercase tracking-wider">Detalhamento de Medidas</h4>
+                            <table class="w-full text-left text-sm text-gray-600 border-collapse min-w-[500px]">
+                                <thead><tr id="techMatrixHead" class="border-b-2 border-gray-200 text-gray-900 bg-gray-50"></tr></thead>
+                                <tbody id="techMatrixBody" class="divide-y divide-gray-100"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="flex flex-col sm:flex-row gap-8">
+                        <div class="sm:w-2/3">
+                            <h4 class="text-sm font-bold text-gray-700 mb-4 uppercase tracking-wider">Acabamentos Disponíveis</h4>
+                            <div id="techAcabamentos" class="space-y-2 text-sm text-gray-700 bg-gray-50 p-4 rounded-lg border border-gray-100"></div>
+                        </div>
+                        <div class="sm:w-1/3 flex flex-col justify-center">
+                            <h4 class="text-sm font-bold text-gray-700 mb-4 uppercase tracking-wider">Documentação</h4>
+                            <a id="techManualLink" href="#" target="_blank" class="w-full flex items-center justify-center px-6 py-4 rounded-lg border-2 border-wood text-wood font-bold hover:bg-wood hover:text-white transition-colors">
+                                <i class="fas fa-file-pdf mr-2 text-xl"></i> Baixar Manual PDF
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // DADOS E CONEXÃO API
+        // ==========================================
+        const API_URL ="https://script.google.com/macros/s/AKfycbzFZM_XLzc2fs32dvbvCmU_bW0REfNrU2FqBXLVe24hDJ0CVbZb_5njGEuRUa3KA0fCnQ/exec"; 
+        
+        let db_linhas = [];
+        let db_referencias = [];
+        let db_medidas = []; 
+        let linhaAtiva = null;
+
+        async function carregarCatalogo() {
+            try {
+                const response = await fetch(API_URL);
+                const data = await response.json();
+                db_linhas = data.linhas;
+                db_referencias = data.referencias;
+                db_medidas = data.medidas || []; 
+                filterProducts('all'); 
+            } catch (error) {
+                console.error("Erro:", error);
+                document.getElementById('productGrid').innerHTML = '<p class="col-span-full text-center text-red-500 py-10">Erro de conexão.</p>';
+            }
+        }
+
+        // ==========================================
+        // LÓGICA DE VITRINE
+        // ==========================================
+        function updateCategoryButtons(cat) {
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                btn.className = btn.dataset.cat === cat 
+                    ? "cat-btn whitespace-nowrap px-5 py-2 rounded-full bg-gray-900 text-white text-sm font-medium transition-colors"
+                    : "cat-btn whitespace-nowrap px-5 py-2 rounded-full border border-gray-300 hover:border-gray-900 text-gray-700 text-sm font-medium transition-colors";
+            });
+        }
+
+        function filterProducts(category) {
+            updateCategoryButtons(category);
+            const grid = document.getElementById('productGrid');
+            grid.innerHTML = '';
+            const filtered = category === 'all' ? db_linhas : db_linhas.filter(p => p.CATEGORIA === category);
+            
+            if(filtered.length === 0) { grid.innerHTML = '<p class="col-span-full text-center text-gray-400 py-10">Nenhum produto cadastrado.</p>'; return; }
+
+            filtered.forEach(linha => {
+                const btnCat = document.querySelector(`.cat-btn[data-cat="${linha.CATEGORIA}"]`);
+                const catName = btnCat ? btnCat.innerText : linha.CATEGORIA;
+                
+                const card = document.createElement('div');
+                card.className = 'product-card bg-white rounded-lg border border-gray-100 overflow-hidden cursor-pointer group flex flex-col';
+                card.onclick = () => openModal(linha.ID_LINHA);
+                card.innerHTML = `
+                    <div class="h-56 overflow-hidden relative bg-gray-50 flex items-center justify-center p-4 border-b border-gray-100">
+                        <img src="${linha.IMAGEM_BASE}" onerror="this.src='https://placehold.co/600x400/f3f4f6/8B5A2B?text=Sem+Foto'" alt="${linha.NOME_LINHA}" class="w-full h-full object-contain mix-blend-multiply transition duration-500 group-hover:scale-105">
+                    </div>
+                    <div class="p-5 flex flex-col flex-grow">
+                        <p class="text-[10px] text-wood font-bold uppercase tracking-wider mb-2">${catName}</p>
+                        <h3 class="text-xl font-bold text-gray-800 leading-tight mb-2 serif-font">${linha.NOME_LINHA}</h3>
+                    </div>`;
+                grid.appendChild(card);
+            });
+        }
+
+        // ==========================================
+        // LÓGICA DO MODAL PRINCIPAL (GALERIA INCLUÍDA)
+        // ==========================================
+        function openModal(id_linha) {
+            linhaAtiva = db_linhas.find(l => l.ID_LINHA === id_linha);
+            if(!linhaAtiva) return;
+
+            document.getElementById('modalTitle').innerText = linhaAtiva.NOME_LINHA;
+            document.getElementById('modalDesc').innerText = linhaAtiva.DESCRICAO_LINHA;
+            
+            // Controle de Mídia (Imagem/Video)
+            const mainImg = document.getElementById('modalImg');
+            const mainVideo = document.getElementById('modalVideo');
+            const refTag = document.getElementById('modalRefTag');
+            
+            mainImg.classList.remove('hidden');
+            mainVideo.classList.add('hidden');
+            mainVideo.pause();
+            refTag.classList.add('hidden');
+            mainImg.src = linhaAtiva.IMAGEM_BASE;
+
+            // 1. Montar Galeria de Miniaturas
+            const thumbContainer = document.getElementById('modalThumbnails');
+            thumbContainer.innerHTML = '';
+            
+            let galeriaArr = [];
+            if(linhaAtiva.IMAGEM_BASE) galeriaArr.push(linhaAtiva.IMAGEM_BASE);
+            if(linhaAtiva.GALERIA_IMAGENS) {
+                const extras = linhaAtiva.GALERIA_IMAGENS.split('|').map(u => u.trim()).filter(u => u !== '');
+                galeriaArr = [...galeriaArr, ...extras];
+            }
+            galeriaArr = [...new Set(galeriaArr)]; // Remove duplicadas
+
+            // Criar miniaturas de Imagens
+            galeriaArr.forEach((imgUrl, index) => {
+                const thumb = document.createElement('img');
+                thumb.src = imgUrl;
+                thumb.className = "w-16 h-16 object-cover rounded cursor-pointer border-2 transition-all bg-white flex-shrink-0";
+                
+                // Primeiro item marcado como selecionado
+                if(index === 0) thumb.classList.add('border-gray-900', 'opacity-100');
+                else thumb.classList.add('border-transparent', 'hover:border-gray-400', 'opacity-75');
+
+                thumb.onclick = () => {
+                    mainVideo.classList.add('hidden');
+                    mainVideo.pause();
+                    mainImg.classList.remove('hidden');
+                    mainImg.src = imgUrl;
+                    refTag.classList.add('hidden'); // Limpa a tag da tabela
+
+                    // Atualiza visual das miniaturas
+                    Array.from(thumbContainer.children).forEach(c => {
+                        c.classList.remove('border-gray-900', 'opacity-100');
+                        c.classList.add('border-transparent', 'opacity-75');
+                    });
+                    thumb.classList.remove('border-transparent', 'opacity-75');
+                    thumb.classList.add('border-gray-900', 'opacity-100');
+                };
+                thumbContainer.appendChild(thumb);
+            });
+
+            // Criar miniatura de Vídeo (Se houver)
+            if(linhaAtiva.VIDEO_URL && linhaAtiva.VIDEO_URL.trim() !== '') {
+                const vidThumb = document.createElement('div');
+                vidThumb.className = "w-16 h-16 flex items-center justify-center bg-gray-100 rounded cursor-pointer border-2 transition-all text-wood opacity-75 border-transparent hover:border-gray-400 flex-shrink-0";
+                vidThumb.innerHTML = '<i class="fas fa-play text-xl"></i>';
+
+                vidThumb.onclick = () => {
+                    mainImg.classList.add('hidden');
+                    refTag.classList.add('hidden');
+                    mainVideo.classList.remove('hidden');
+                    
+                    if(!mainVideo.src.includes(linhaAtiva.VIDEO_URL)) {
+                        mainVideo.src = linhaAtiva.VIDEO_URL;
+                    }
+                    mainVideo.play();
+
+                    Array.from(thumbContainer.children).forEach(c => {
+                        c.classList.remove('border-gray-900', 'opacity-100');
+                        c.classList.add('border-transparent', 'opacity-75');
+                    });
+                    vidThumb.classList.remove('border-transparent', 'opacity-75');
+                    vidThumb.classList.add('border-gray-900', 'opacity-100');
+                };
+                thumbContainer.appendChild(vidThumb);
+            }
+
+            // 2. Montar Tabela de Referências
+            const tbody = document.getElementById('tableReferencesBody');
+            tbody.innerHTML = '';
+            const refs = db_referencias.filter(r => r.ID_LINHA === id_linha);
+            
+            refs.forEach(ref => {
+                const tr = document.createElement('tr');
+                tr.className = "border-b border-gray-100 cursor-default hover:bg-gray-50 transition-colors";
+                
+                // Hover na linha mostra a foto da referência e etiqueta
+                tr.onmouseenter = () => { 
+                    if(ref.IMAGEM_REF && ref.IMAGEM_REF.trim() !== '') {
+                        mainVideo.classList.add('hidden');
+                        mainVideo.pause();
+                        mainImg.classList.remove('hidden');
+                        mainImg.src = ref.IMAGEM_REF;
+                        
+                        refTag.innerText = `Ref. ${ref.REFERENCIA}`;
+                        refTag.classList.remove('hidden');
+                        
+                        // Reseta bordas da galeria para não confundir
+                        Array.from(thumbContainer.children).forEach(c => {
+                            c.classList.remove('border-gray-900', 'opacity-100');
+                            c.classList.add('border-transparent', 'opacity-75');
+                        });
+                    }
+                };
+                
+                // Sai do hover, volta para a primeira imagem da galeria
+                tr.onmouseleave = () => { 
+                    refTag.classList.add('hidden');
+                    if(galeriaArr.length > 0) {
+                        mainImg.src = galeriaArr[0];
+                        if(thumbContainer.children.length > 0) {
+                            thumbContainer.children[0].classList.add('border-gray-900', 'opacity-100');
+                            thumbContainer.children[0].classList.remove('border-transparent', 'opacity-75');
+                        }
+                    }
+                };
+
+                tr.innerHTML = `
+                    <td class="py-3 pl-2 font-medium text-gray-900">${ref.REFERENCIA || '-'}</td>
+                    <td class="py-3 text-gray-700">${ref.DIMENSAO || '-'}</td>
+                    <td class="py-3 text-gray-700">${ref.FORMATO || '-'}</td>`;
+                tbody.appendChild(tr);
+            });
+
+            // 3. Exibe Modal
+            const modal = document.getElementById('productModal');
+            modal.classList.remove('hidden');
+            setTimeout(() => { modal.classList.remove('opacity-0', 'pointer-events-none'); document.body.classList.add('modal-active'); }, 10);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('productModal');
+            const mainVideo = document.getElementById('modalVideo');
+            
+            mainVideo.pause(); // Para o som/vídeo imediatamente ao fechar
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            document.body.classList.remove('modal-active');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        // ==========================================
+        // LÓGICA DO MODAL TÉCNICO (MANTIDA)
+        // ==========================================
+        function popTechModalComprehensive() {
+            if(!linhaAtiva) return;
+            document.getElementById('techTitle').innerText = linhaAtiva.NOME_LINHA;
+
+            const refsDaFamilia = db_referencias.filter(r => r.ID_LINHA === linhaAtiva.ID_LINHA);
+            
+            const techBody = document.getElementById('techTechTableBody');
+            techBody.innerHTML = '';
+            refsDaFamilia.forEach(ref => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="py-3 pl-3 font-medium text-gray-900">${ref.REFERENCIA || '-'}</td>
+                    <td class="py-3 text-center text-gray-600">${ref.PESO_LIQ ? ref.PESO_LIQ + ' kg' : '-'}</td>
+                    <td class="py-3 text-center text-gray-600">${ref.PESO_BRUTO ? ref.PESO_BRUTO + ' kg' : '-'}</td>
+                    <td class="py-3 text-center text-gray-600">${ref.CUBAGEM ? ref.CUBAGEM + ' m³' : '-'}</td>
+                    <td class="py-3 text-center text-gray-600">${ref.VOLUMES || '-'}</td>`;
+                techBody.appendChild(tr);
+            });
+
+            const thead = document.getElementById('techMatrixHead');
+            const tbodyMatriz = document.getElementById('techMatrixBody');
+            thead.innerHTML = '';
+            tbodyMatriz.innerHTML = '';
+
+            const idsRefsFamilia = refsDaFamilia.map(r => String(r.REFERENCIA));
+            const medidasDestaFamilia = db_medidas.filter(m => idsRefsFamilia.includes(String(m.REFERENCIA)));
+
+            if(medidasDestaFamilia.length > 0) {
+                let letrasValidas = new Set();
+                medidasDestaFamilia.forEach(row => {
+                    Object.keys(row).forEach(key => {
+                        if(key !== 'REFERENCIA') {
+                            const val = String(row[key]).trim().toLowerCase();
+                            if(val !== '' && val !== '(vazio)' && val !== 'null' && val !== 'undefined') {
+                                letrasValidas.add(key);
+                            }
+                        }
+                    });
+                });
+                
+                const letrasOrdenadas = Array.from(letrasValidas).sort();
+
+                const legendas = {};
+                if(linhaAtiva.TABELA_DIMENSOES) {
+                    linhaAtiva.TABELA_DIMENSOES.split('|').forEach(item => {
+                        const parts = item.split(':');
+                        if(parts.length === 2) legendas[parts[0].trim()] = parts[1].trim();
+                    });
+                }
+
+                let headerHTML = `<th class="py-3 pl-3 font-semibold rounded-tl-lg text-left w-1/4">Ref.</th>`;
+                letrasOrdenadas.forEach(letra => {
+                    const desc = legendas[letra] || '';
+                    headerHTML += `<th class="py-3 font-semibold text-center">
+                        <span class="text-lg text-gray-900">${letra}</span>
+                        <span class="block text-[10px] text-gray-400 font-normal mt-0.5">${desc}</span>
+                    </th>`;
+                });
+                thead.innerHTML = headerHTML;
+
+                refsDaFamilia.forEach(ref => {
+                    const medidaRow = medidasDestaFamilia.find(m => String(m.REFERENCIA) === String(ref.REFERENCIA));
+                    let rowHTML = `<td class="py-3 pl-3 font-medium text-gray-900 bg-white">${ref.REFERENCIA}</td>`;
+                    
+                    letrasOrdenadas.forEach(letra => {
+                        let valor = '-';
+                        if(medidaRow && medidaRow[letra]) {
+                            const valStr = String(medidaRow[letra]).trim();
+                            if(valStr.toLowerCase() !== '(vazio)' && valStr !== '') {
+                                valor = valStr;
+                            }
+                        }
+                        rowHTML += `<td class="py-3 text-center text-gray-600 bg-white">${valor}</td>`;
+                    });
+                    
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = rowHTML;
+                    tbodyMatriz.appendChild(tr);
+                });
+            } else {
+                thead.innerHTML = '<th>Aviso</th>';
+                tbodyMatriz.innerHTML = '<tr><td class="py-4 text-gray-400">Nenhuma medida específica cadastrada.</td></tr>';
+            }
+
+            document.getElementById('techDimImg').src = linhaAtiva.IMAGEM_TECNICA || 'https://placehold.co/400x300/f3f4f6/8B5A2B?text=Sem+Croqui'; 
+
+            const acabaCont = document.getElementById('techAcabamentos');
+            acabaCont.innerHTML = '';
+            if(linhaAtiva.TABELA_ACABAMENTOS) {
+                linhaAtiva.TABELA_ACABAMENTOS.split('|').forEach(acaba => {
+                    acabaCont.innerHTML += `<p>- ${acaba.trim()}</p>`;
+                });
+            } else { acabaCont.innerHTML = '<p class="text-gray-400">Não informado.</p>'; }
+
+            const manualLink = document.getElementById('techManualLink');
+            manualLink.href = linhaAtiva.URL_MANUAL || '#'; 
+            if(!linhaAtiva.URL_MANUAL) manualLink.classList.add('opacity-50', 'pointer-events-none');
+            else manualLink.classList.remove('opacity-50', 'pointer-events-none');
+
+            const modal = document.getElementById('techModal');
+            modal.classList.remove('hidden');
+            setTimeout(() => { modal.classList.remove('opacity-0', 'pointer-events-none'); }, 10);
+        }
+
+        function closeTechModal() {
+            const modal = document.getElementById('techModal');
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        document.addEventListener('keydown', function(event) {
+            if (event.key === "Escape") {
+                const techModal = document.getElementById('techModal');
+                if (!techModal.classList.contains('hidden')) closeTechModal();
+                else closeModal();
+            }
+        });
+
+        window.onload = carregarCatalogo;
+    </script>
+</body>
+</html>
