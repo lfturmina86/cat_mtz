@@ -101,7 +101,6 @@
                 </button>
 
                 <div class="bg-gray-50 md:w-5/12 p-5 md:p-6 flex flex-col items-center justify-start relative border-b md:border-b-0 md:border-r border-gray-100 min-h-[300px] md:overflow-y-auto flex-shrink-0">
-                    
                     <div class="w-full aspect-square relative flex items-center justify-center bg-white rounded-lg shadow-sm overflow-hidden p-4 mb-4 mt-8 md:mt-0">
                         <img id="modalImg" src="" alt="Produto" class="w-full h-full object-contain mix-blend-multiply transition-opacity duration-300">
                         <video id="modalVideo" class="hidden w-full h-full object-contain" controls loop playsinline></video>
@@ -110,7 +109,6 @@
 
                     <div id="modalThumbnails" class="flex gap-3 overflow-x-auto w-full justify-start md:justify-center min-h-[70px] py-2 px-1 thumb-scroll">
                         </div>
-
                 </div>
 
                 <div class="md:w-7/12 flex flex-col md:max-h-[90vh] flex-shrink-0">
@@ -140,9 +138,17 @@
                     </div>
 
                     <div class="p-6 bg-gray-50 border-t border-gray-100 flex-shrink-0">
-                        <button onclick="popTechModalComprehensive()" class="w-full bg-gray-900 text-white py-3 rounded hover:bg-gray-800 transition font-medium text-center inline-flex justify-center items-center">
-                            <i class="fas fa-info-circle mr-2"></i> Mais Informações Técnicas
-                        </button>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <button onclick="openTechModalTab('acabamentos')" class="w-full bg-white border-2 border-gray-900 text-gray-900 py-2.5 rounded hover:bg-gray-900 hover:text-white transition font-medium text-sm text-center">
+                                <i class="fas fa-palette mr-1.5"></i> Acabamentos
+                            </button>
+                            <button onclick="openTechModalTab('dimensoes')" class="w-full bg-white border-2 border-gray-900 text-gray-900 py-2.5 rounded hover:bg-gray-900 hover:text-white transition font-medium text-sm text-center">
+                                <i class="fas fa-ruler-combined mr-1.5"></i> Dimensões
+                            </button>
+                            <button onclick="openTechModalTab('logistica')" class="w-full bg-white border-2 border-gray-900 text-gray-900 py-2.5 rounded hover:bg-gray-900 hover:text-white transition font-medium text-sm text-center">
+                                <i class="fas fa-box-open mr-1.5"></i> Info. Técnicas
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -156,56 +162,76 @@
                 
                 <div class="p-5 md:p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50 rounded-t-lg flex-shrink-0">
                     <div>
-                        <p class="text-xs font-bold tracking-widest text-wood uppercase mb-1">Ficha Técnica Integral</p>
-                        <h3 class="text-xl md:text-2xl font-bold serif-font text-gray-900" id="techTitle">Detalhes e Especificações</h3>
+                        <p class="text-xs font-bold tracking-widest text-wood uppercase mb-1">Detalhes e Especificações</p>
+                        <h3 class="text-xl md:text-2xl font-bold serif-font text-gray-900" id="techTitle">Nome da Linha</h3>
                     </div>
                     <button onclick="closeTechModal()" class="text-gray-400 hover:text-gray-900 bg-white rounded-full w-8 h-8 flex items-center justify-center shadow-sm border border-gray-200">
                         <i class="fas fa-times text-xl"></i>
                     </button>
                 </div>
 
+                <div class="border-b border-gray-200 flex px-6 overflow-x-auto nav-scroll flex-shrink-0">
+                    <button data-tab="acabamentos" onclick="switchTechTab('acabamentos')" class="tech-tab-btn px-4 py-3 text-sm font-medium border-b-2 whitespace-nowrap transition-colors">Acabamentos Disponíveis</button>
+                    <button data-tab="dimensoes" onclick="switchTechTab('dimensoes')" class="tech-tab-btn px-4 py-3 text-sm font-medium border-b-2 whitespace-nowrap transition-colors">Dimensões e Croqui</button>
+                    <button data-tab="logistica" onclick="switchTechTab('logistica')" class="tech-tab-btn px-4 py-3 text-sm font-medium border-b-2 whitespace-nowrap transition-colors">Logística e Manuais</button>
+                </div>
+
                 <div class="p-5 md:p-8 overflow-y-auto table-scroll flex-grow">
-                    <div class="mb-10 pb-6 border-b border-gray-100">
-                        <h4 class="text-sm font-bold text-gray-700 mb-4 uppercase tracking-wider">Informações Logísticas</h4>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left text-sm text-gray-600 border-collapse min-w-[500px]">
-                                <thead>
-                                    <tr class="border-b-2 border-gray-200 text-gray-900 bg-gray-50">
-                                        <th class="py-2 pl-3 font-semibold rounded-tl-lg">Ref.</th>
-                                        <th class="py-2 font-semibold text-center">Peso Líq.</th>
-                                        <th class="py-2 font-semibold text-center">Peso Bruto</th>
-                                        <th class="py-2 font-semibold text-center">Cubagem</th>
-                                        <th class="py-2 font-semibold text-center rounded-tr-lg">Volumes</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="techTechTableBody" class="divide-y divide-gray-100"></tbody>
-                            </table>
+                    
+                    <div id="tab-acabamentos" class="tech-tab-content hidden">
+                        <h4 class="text-sm font-bold text-gray-700 mb-4 uppercase tracking-wider">Combinações e Texturas</h4>
+                        <div id="techAcabamentos" class="bg-white rounded-lg border border-gray-100 p-5">
+                            </div>
+                    </div>
+
+                    <div id="tab-dimensoes" class="tech-tab-content hidden">
+                        <div class="flex flex-col lg:flex-row gap-8">
+                            <div class="lg:w-1/3 p-4 bg-gray-50 rounded-lg flex items-center justify-center border border-gray-100 min-h-[250px]">
+                                <img id="techDimImg" src="" onerror="this.src='https://placehold.co/400x300/f3f4f6/8B5A2B?text=Sem+Croqui'" alt="Croqui" class="w-full h-full object-contain mix-blend-multiply">
+                            </div>
+                            <div class="lg:w-2/3 overflow-x-auto">
+                                <h4 class="text-sm font-bold text-gray-700 mb-4 uppercase tracking-wider">Matriz de Medidas</h4>
+                                <table class="w-full text-left text-sm text-gray-600 border-collapse min-w-[500px]">
+                                    <thead><tr id="techMatrixHead" class="border-b-2 border-gray-200 text-gray-900 bg-gray-50"></tr></thead>
+                                    <tbody id="techMatrixBody" class="divide-y divide-gray-100"></tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
-                    <div class="mb-10 pb-6 border-b border-gray-100 flex flex-col lg:flex-row gap-8">
-                        <div class="lg:w-1/3 p-4 bg-gray-50 rounded-lg flex items-center justify-center border border-gray-100 min-h-[250px]">
-                            <img id="techDimImg" src="" onerror="this.src='https://placehold.co/400x300/f3f4f6/8B5A2B?text=Sem+Croqui'" alt="Croqui" class="w-full h-full object-contain mix-blend-multiply">
+
+                    <div id="tab-logistica" class="tech-tab-content hidden">
+                        <div class="mb-8">
+                            <h4 class="text-sm font-bold text-gray-700 mb-4 uppercase tracking-wider">Pesos e Volumes por Referência</h4>
+                            <div class="overflow-x-auto border border-gray-100 rounded-lg">
+                                <table class="w-full text-left text-sm text-gray-600 border-collapse min-w-[500px]">
+                                    <thead>
+                                        <tr class="border-b-2 border-gray-200 text-gray-900 bg-gray-50">
+                                            <th class="py-3 pl-4 font-semibold">Ref.</th>
+                                            <th class="py-3 font-semibold text-center">Peso Líq.</th>
+                                            <th class="py-3 font-semibold text-center">Peso Bruto</th>
+                                            <th class="py-3 font-semibold text-center">Cubagem</th>
+                                            <th class="py-3 font-semibold text-center pr-4">Volumes</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="techTechTableBody" class="divide-y divide-gray-100"></tbody>
+                                </table>
+                            </div>
                         </div>
-                        <div class="lg:w-2/3 overflow-x-auto">
-                            <h4 class="text-sm font-bold text-gray-700 mb-4 uppercase tracking-wider">Detalhamento de Medidas</h4>
-                            <table class="w-full text-left text-sm text-gray-600 border-collapse min-w-[500px]">
-                                <thead><tr id="techMatrixHead" class="border-b-2 border-gray-200 text-gray-900 bg-gray-50"></tr></thead>
-                                <tbody id="techMatrixBody" class="divide-y divide-gray-100"></tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="flex flex-col sm:flex-row gap-8">
-                        <div class="sm:w-2/3">
-                            <h4 class="text-sm font-bold text-gray-700 mb-4 uppercase tracking-wider">Acabamentos Disponíveis</h4>
-                            <div id="techAcabamentos" class="space-y-2 text-sm text-gray-700 bg-gray-50 p-4 rounded-lg border border-gray-100"></div>
-                        </div>
-                        <div class="sm:w-1/3 flex flex-col justify-center">
-                            <h4 class="text-sm font-bold text-gray-700 mb-4 uppercase tracking-wider">Documentação</h4>
-                            <a id="techManualLink" href="#" target="_blank" class="w-full flex items-center justify-center px-6 py-4 rounded-lg border-2 border-wood text-wood font-bold hover:bg-wood hover:text-white transition-colors text-center">
-                                <i class="fas fa-file-pdf mr-2 text-xl"></i> Baixar Manual PDF
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <a id="techManualLink" href="#" target="_blank" class="flex flex-col items-center justify-center p-6 rounded-lg border border-gray-200 bg-gray-50 hover:border-wood hover:bg-white transition-colors group">
+                                <i class="fas fa-file-pdf text-3xl text-gray-400 group-hover:text-wood mb-3 transition-colors"></i>
+                                <span class="font-bold text-gray-800 group-hover:text-wood transition-colors">Manual de Montagem</span>
+                                <span class="text-xs text-gray-500 mt-1">Ver PDF completo</span>
+                            </a>
+                            <a id="tech3DLink" href="#" target="_blank" class="flex flex-col items-center justify-center p-6 rounded-lg border border-gray-200 bg-gray-50 hover:border-wood hover:bg-white transition-colors group">
+                                <i class="fas fa-cube text-3xl text-gray-400 group-hover:text-wood mb-3 transition-colors"></i>
+                                <span class="font-bold text-gray-800 group-hover:text-wood transition-colors">Bloco 3D (Warehouse)</span>
+                                <span class="text-xs text-gray-500 mt-1">Baixar modelo SketchUp</span>
                             </a>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -215,20 +241,24 @@
         // ==========================================
         // DADOS E CONEXÃO API
         // ==========================================
-        const API_URL ="https://script.google.com/macros/s/AKfycbzFZM_XLzc2fs32dvbvCmU_bW0REfNrU2FqBXLVe24hDJ0CVbZb_5njGEuRUa3KA0fCnQ/exec"; 
+        const API_URL = "https://script.google.com/macros/s/AKfycbzFZM_XLzc2fs32dvbvCmU_bW0REfNrU2FqBXLVe24hDJ0CVbZb_5njGEuRUa3KA0fCnQ/exec"; 
         
         let db_linhas = [];
         let db_referencias = [];
         let db_medidas = []; 
+        let db_opcoes_produto = [];
+        let db_acabamentos = []; 
         let linhaAtiva = null;
 
         async function carregarCatalogo() {
             try {
                 const response = await fetch(API_URL);
                 const data = await response.json();
-                db_linhas = data.linhas;
-                db_referencias = data.referencias;
+                db_linhas = data.linhas || [];
+                db_referencias = data.referencias || [];
                 db_medidas = data.medidas || []; 
+                db_opcoes_produto = data.opcoes_produto || [];
+                db_acabamentos = data.acabamentos || [];
                 filterProducts('all'); 
             } catch (error) {
                 console.error("Erro:", error);
@@ -275,7 +305,7 @@
         }
 
         // ==========================================
-        // LÓGICA DO MODAL PRINCIPAL (GALERIA INCLUÍDA E PROTEGIDA)
+        // LÓGICA DO MODAL PRINCIPAL 
         // ==========================================
         function openModal(id_linha) {
             linhaAtiva = db_linhas.find(l => l.ID_LINHA === id_linha);
@@ -293,11 +323,10 @@
             mainVideo.pause();
             refTag.classList.add('hidden');
             
-            // Fallback de erro para a imagem principal do modal
             mainImg.onerror = function() { this.src = 'https://placehold.co/600x400/f3f4f6/8B5A2B?text=Imagem+Indisponível'; };
             mainImg.src = linhaAtiva.IMAGEM_BASE;
 
-            // 1. Montar Galeria de Miniaturas
+            // Galeria
             const thumbContainer = document.getElementById('modalThumbnails');
             thumbContainer.innerHTML = '';
             
@@ -313,10 +342,7 @@
                 const thumb = document.createElement('img');
                 thumb.src = imgUrl;
                 thumb.className = "w-16 h-16 object-cover rounded cursor-pointer border-2 transition-all bg-white flex-shrink-0";
-                
-                // Se der erro ao carregar (link quebrado), esconde a miniatura
                 thumb.onerror = function() { this.style.display = 'none'; };
-                
                 if(index === 0) thumb.classList.add('border-gray-900', 'opacity-100');
                 else thumb.classList.add('border-transparent', 'hover:border-gray-400', 'opacity-75');
 
@@ -326,7 +352,6 @@
                     mainImg.classList.remove('hidden');
                     mainImg.src = imgUrl;
                     refTag.classList.add('hidden'); 
-
                     Array.from(thumbContainer.children).forEach(c => {
                         c.classList.remove('border-gray-900', 'opacity-100');
                         c.classList.add('border-transparent', 'opacity-75');
@@ -341,17 +366,12 @@
                 const vidThumb = document.createElement('div');
                 vidThumb.className = "w-16 h-16 flex items-center justify-center bg-gray-100 rounded cursor-pointer border-2 transition-all text-wood opacity-75 border-transparent hover:border-gray-400 flex-shrink-0";
                 vidThumb.innerHTML = '<i class="fas fa-play text-xl"></i>';
-
                 vidThumb.onclick = () => {
                     mainImg.classList.add('hidden');
                     refTag.classList.add('hidden');
                     mainVideo.classList.remove('hidden');
-                    
-                    if(!mainVideo.src.includes(linhaAtiva.VIDEO_URL)) {
-                        mainVideo.src = linhaAtiva.VIDEO_URL;
-                    }
+                    if(!mainVideo.src.includes(linhaAtiva.VIDEO_URL)) mainVideo.src = linhaAtiva.VIDEO_URL;
                     mainVideo.play();
-
                     Array.from(thumbContainer.children).forEach(c => {
                         c.classList.remove('border-gray-900', 'opacity-100');
                         c.classList.add('border-transparent', 'opacity-75');
@@ -362,7 +382,7 @@
                 thumbContainer.appendChild(vidThumb);
             }
 
-            // 2. Montar Tabela de Referências
+            // Tabela de Refs
             const tbody = document.getElementById('tableReferencesBody');
             tbody.innerHTML = '';
             const refs = db_referencias.filter(r => r.ID_LINHA === id_linha);
@@ -370,24 +390,20 @@
             refs.forEach(ref => {
                 const tr = document.createElement('tr');
                 tr.className = "border-b border-gray-100 cursor-default hover:bg-gray-50 transition-colors";
-                
                 tr.onmouseenter = () => { 
                     if(ref.IMAGEM_REF && ref.IMAGEM_REF.trim() !== '') {
                         mainVideo.classList.add('hidden');
                         mainVideo.pause();
                         mainImg.classList.remove('hidden');
                         mainImg.src = ref.IMAGEM_REF;
-                        
                         refTag.innerText = `Ref. ${ref.REFERENCIA}`;
                         refTag.classList.remove('hidden');
-                        
                         Array.from(thumbContainer.children).forEach(c => {
                             c.classList.remove('border-gray-900', 'opacity-100');
                             c.classList.add('border-transparent', 'opacity-75');
                         });
                     }
                 };
-                
                 tr.onmouseleave = () => { 
                     refTag.classList.add('hidden');
                     if(galeriaArr.length > 0) {
@@ -398,7 +414,6 @@
                         }
                     }
                 };
-
                 tr.innerHTML = `
                     <td class="py-3 pl-2 font-medium text-gray-900">${ref.REFERENCIA || '-'}</td>
                     <td class="py-3 text-gray-700">${ref.DIMENSAO || '-'}</td>
@@ -414,7 +429,6 @@
         function closeModal() {
             const modal = document.getElementById('productModal');
             const mainVideo = document.getElementById('modalVideo');
-            
             mainVideo.pause(); 
             modal.classList.add('opacity-0', 'pointer-events-none');
             document.body.classList.remove('modal-active');
@@ -422,33 +436,64 @@
         }
 
         // ==========================================
-        // LÓGICA DO MODAL TÉCNICO (MANTIDA)
+        // LÓGICA DO MODAL TÉCNICO (ABAS)
         // ==========================================
-        function popTechModalComprehensive() {
+        function switchTechTab(tabId) {
+            // Esconde todos os conteúdos
+            document.querySelectorAll('.tech-tab-content').forEach(el => el.classList.add('hidden'));
+            // Mostra o ativo
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+            
+            // Estiliza os botões
+            document.querySelectorAll('.tech-tab-btn').forEach(btn => {
+                if(btn.dataset.tab === tabId) {
+                    btn.classList.add('border-gray-900', 'text-gray-900');
+                    btn.classList.remove('border-transparent', 'text-gray-400');
+                } else {
+                    btn.classList.remove('border-gray-900', 'text-gray-900');
+                    btn.classList.add('border-transparent', 'text-gray-400');
+                }
+            });
+        }
+
+        function openTechModalTab(tabId) {
             if(!linhaAtiva) return;
             document.getElementById('techTitle').innerText = linhaAtiva.NOME_LINHA;
 
             const refsDaFamilia = db_referencias.filter(r => r.ID_LINHA === linhaAtiva.ID_LINHA);
+            const idsRefsFamilia = refsDaFamilia.map(r => String(r.REFERENCIA));
             
+            // --- ABA: LOGÍSTICA ---
             const techBody = document.getElementById('techTechTableBody');
             techBody.innerHTML = '';
             refsDaFamilia.forEach(ref => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td class="py-3 pl-3 font-medium text-gray-900">${ref.REFERENCIA || '-'}</td>
+                    <td class="py-3 pl-4 font-medium text-gray-900">${ref.REFERENCIA || '-'}</td>
                     <td class="py-3 text-center text-gray-600">${ref.PESO_LIQ ? ref.PESO_LIQ + ' kg' : '-'}</td>
                     <td class="py-3 text-center text-gray-600">${ref.PESO_BRUTO ? ref.PESO_BRUTO + ' kg' : '-'}</td>
                     <td class="py-3 text-center text-gray-600">${ref.CUBAGEM ? ref.CUBAGEM + ' m³' : '-'}</td>
-                    <td class="py-3 text-center text-gray-600">${ref.VOLUMES || '-'}</td>`;
+                    <td class="py-3 text-center text-gray-600 pr-4">${ref.VOLUMES || '-'}</td>`;
                 techBody.appendChild(tr);
             });
 
+            // Links (Manual e 3D)
+            const manualLink = document.getElementById('techManualLink');
+            manualLink.href = linhaAtiva.URL_MANUAL || '#'; 
+            if(!linhaAtiva.URL_MANUAL) manualLink.classList.add('opacity-50', 'pointer-events-none');
+            else manualLink.classList.remove('opacity-50', 'pointer-events-none');
+
+            const link3D = document.getElementById('tech3DLink');
+            link3D.href = linhaAtiva.LINK_3D || '#'; 
+            if(!linhaAtiva.LINK_3D) link3D.classList.add('opacity-50', 'pointer-events-none');
+            else link3D.classList.remove('opacity-50', 'pointer-events-none');
+
+            // --- ABA: DIMENSÕES ---
             const thead = document.getElementById('techMatrixHead');
             const tbodyMatriz = document.getElementById('techMatrixBody');
             thead.innerHTML = '';
             tbodyMatriz.innerHTML = '';
 
-            const idsRefsFamilia = refsDaFamilia.map(r => String(r.REFERENCIA));
             const medidasDestaFamilia = db_medidas.filter(m => idsRefsFamilia.includes(String(m.REFERENCIA)));
 
             if(medidasDestaFamilia.length > 0) {
@@ -457,13 +502,10 @@
                     Object.keys(row).forEach(key => {
                         if(key !== 'REFERENCIA') {
                             const val = String(row[key]).trim().toLowerCase();
-                            if(val !== '' && val !== '(vazio)' && val !== 'null' && val !== 'undefined') {
-                                letrasValidas.add(key);
-                            }
+                            if(val !== '' && val !== '(vazio)' && val !== 'null' && val !== 'undefined') letrasValidas.add(key);
                         }
                     });
                 });
-                
                 const letrasOrdenadas = Array.from(letrasValidas).sort();
 
                 const legendas = {};
@@ -492,13 +534,10 @@
                         let valor = '-';
                         if(medidaRow && medidaRow[letra]) {
                             const valStr = String(medidaRow[letra]).trim();
-                            if(valStr.toLowerCase() !== '(vazio)' && valStr !== '') {
-                                valor = valStr;
-                            }
+                            if(valStr.toLowerCase() !== '(vazio)' && valStr !== '') valor = valStr;
                         }
                         rowHTML += `<td class="py-3 text-center text-gray-600 bg-white">${valor}</td>`;
                     });
-                    
                     const tr = document.createElement('tr');
                     tr.innerHTML = rowHTML;
                     tbodyMatriz.appendChild(tr);
@@ -510,19 +549,62 @@
 
             document.getElementById('techDimImg').src = linhaAtiva.IMAGEM_TECNICA || 'https://placehold.co/400x300/f3f4f6/8B5A2B?text=Sem+Croqui'; 
 
-            const acabaCont = document.getElementById('techAcabamentos');
-            acabaCont.innerHTML = '';
-            if(linhaAtiva.TABELA_ACABAMENTOS) {
-                linhaAtiva.TABELA_ACABAMENTOS.split('|').forEach(acaba => {
-                    acabaCont.innerHTML += `<p>- ${acaba.trim()}</p>`;
+            // --- ABA: ACABAMENTOS ---
+            const acabamentosCont = document.getElementById('techAcabamentos');
+            acabamentosCont.innerHTML = '';
+            
+            const opcoesDestaFamilia = db_opcoes_produto.filter(o => idsRefsFamilia.includes(String(o['REFERÊNCIA'])));
+
+            if(opcoesDestaFamilia.length > 0) {
+                const gruposOpcoes = {};
+                opcoesDestaFamilia.forEach(row => {
+                    Object.keys(row).forEach(coluna => {
+                        if(coluna !== 'REFERÊNCIA' && !coluna.includes('ALTURA') && !coluna.includes('QUANTIDADE') && !coluna.includes('CLASS')) {
+                            const val = String(row[coluna]).trim();
+                            if(val !== '' && val.toLowerCase() !== '(vazio)' && val !== 'null' && val !== 'undefined') {
+                                if(!gruposOpcoes[coluna]) gruposOpcoes[coluna] = new Set();
+                                val.split(',').forEach(item => {
+                                    if(item.trim() !== '') gruposOpcoes[coluna].add(item.trim());
+                                });
+                            }
+                        }
+                    });
                 });
-            } else { acabaCont.innerHTML = '<p class="text-gray-400">Não informado.</p>'; }
 
-            const manualLink = document.getElementById('techManualLink');
-            manualLink.href = linhaAtiva.URL_MANUAL || '#'; 
-            if(!linhaAtiva.URL_MANUAL) manualLink.classList.add('opacity-50', 'pointer-events-none');
-            else manualLink.classList.remove('opacity-50', 'pointer-events-none');
+                if(Object.keys(gruposOpcoes).length > 0) {
+                    Object.keys(gruposOpcoes).forEach(categoria => {
+                        const itens = Array.from(gruposOpcoes[categoria]);
+                        if(itens.length === 0) return;
 
+                        let htmlBlock = `<div class="mb-6">
+                            <h5 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">${categoria}</h5>
+                            <div class="flex flex-wrap gap-3">`;
+
+                        itens.forEach(codigoItem => {
+                            const infoAcab = db_acabamentos.find(a => a.CHAVE === codigoItem) || { 
+                                NOME: codigoItem, 
+                                IMAGEM: 'https://placehold.co/100x100/e2e8f0/94a3b8?text='+codigoItem.substring(0,3).toUpperCase() 
+                            };
+
+                            htmlBlock += `
+                                <div class="flex flex-col items-center w-20 group" title="${infoAcab.NOME}">
+                                    <div class="w-16 h-16 rounded-full shadow-md overflow-hidden bg-gray-100 border-2 border-white ring-1 ring-gray-200 group-hover:ring-wood transition-all mb-2">
+                                        <img src="${infoAcab.IMAGEM}" onerror="this.src='https://placehold.co/100x100/e2e8f0/94a3b8?text=Cor'" class="w-full h-full object-cover">
+                                    </div>
+                                    <span class="text-[10px] text-gray-600 font-medium text-center leading-tight line-clamp-2 group-hover:text-wood transition-colors">${infoAcab.NOME}</span>
+                                </div>
+                            `;
+                        });
+                        htmlBlock += `</div></div>`;
+                        acabamentosCont.innerHTML += htmlBlock;
+                    });
+                } else { acabamentosCont.innerHTML = '<p class="text-sm text-gray-400">Nenhum acabamento específico cadastrado.</p>'; }
+            } else { acabamentosCont.innerHTML = '<p class="text-sm text-gray-400">Nenhum acabamento específico cadastrado.</p>'; }
+
+            // Configura a view inicial do Modal Técnico
+            switchTechTab(tabId);
+
+            // Exibe o modal
             const modal = document.getElementById('techModal');
             modal.classList.remove('hidden');
             setTimeout(() => { modal.classList.remove('opacity-0', 'pointer-events-none'); }, 10);
