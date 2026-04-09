@@ -55,9 +55,9 @@
     <div class="bg-gray-900 text-white py-16 px-4 relative overflow-hidden">
         <div class="absolute inset-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center"></div>
         <div class="container mx-auto relative z-10 text-center">
-            <h1 class="text-4xl md:text-6xl font-bold mb-4">Catálogo Virtual - Matrezan</h1>
+            <h1 class="text-4xl md:text-6xl font-bold mb-4">Lançamentos 2026</h1>
             <p class="text-xl text-gray-300 max-w-2xl mx-auto font-light">
-                Design curvo e sofisticação para ambientes contemporâneos.
+                Design orgânico, materiais nobres e a essência da marcenaria contemporânea.
             </p>
         </div>
     </div>
@@ -173,7 +173,7 @@
                 <div class="border-b border-gray-200 flex px-6 overflow-x-auto nav-scroll flex-shrink-0">
                     <button data-tab="acabamentos" onclick="switchTechTab('acabamentos')" class="tech-tab-btn px-4 py-3 text-sm font-medium border-b-2 whitespace-nowrap transition-colors">Acabamentos Disponíveis</button>
                     <button data-tab="dimensoes" onclick="switchTechTab('dimensoes')" class="tech-tab-btn px-4 py-3 text-sm font-medium border-b-2 whitespace-nowrap transition-colors">Dimensões e Croqui</button>
-                    <button data-tab="logistica" onclick="switchTechTab('logistica')" class="tech-tab-btn px-4 py-3 text-sm font-medium border-b-2 whitespace-nowrap transition-colors">Logística e Manuais</button>
+                    <button data-tab="logistica" onclick="switchTechTab('logistica')" class="tech-tab-btn px-4 py-3 text-sm font-medium border-b-2 whitespace-nowrap transition-colors">Logística e Documentação</button>
                 </div>
 
                 <div class="p-5 md:p-8 overflow-y-auto table-scroll flex-grow">
@@ -200,35 +200,22 @@
                     </div>
 
                     <div id="tab-logistica" class="tech-tab-content hidden">
-                        <div class="mb-8">
-                            <h4 class="text-sm font-bold text-gray-700 mb-4 uppercase tracking-wider">Pesos e Volumes por Referência</h4>
-                            <div class="overflow-x-auto border border-gray-100 rounded-lg">
-                                <table class="w-full text-left text-sm text-gray-600 border-collapse min-w-[500px]">
-                                    <thead>
-                                        <tr class="border-b-2 border-gray-200 text-gray-900 bg-gray-50">
-                                            <th class="py-3 pl-4 font-semibold">Ref.</th>
-                                            <th class="py-3 font-semibold text-center">Peso Líq.</th>
-                                            <th class="py-3 font-semibold text-center">Peso Bruto</th>
-                                            <th class="py-3 font-semibold text-center">Cubagem</th>
-                                            <th class="py-3 font-semibold text-center pr-4">Volumes</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="techTechTableBody" class="divide-y divide-gray-100"></tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <a id="techManualLink" href="#" target="_blank" class="flex flex-col items-center justify-center p-6 rounded-lg border border-gray-200 bg-gray-50 hover:border-wood hover:bg-white transition-colors group">
-                                <i class="fas fa-file-pdf text-3xl text-gray-400 group-hover:text-wood mb-3 transition-colors"></i>
-                                <span class="font-bold text-gray-800 group-hover:text-wood transition-colors">Manual de Montagem</span>
-                                <span class="text-xs text-gray-500 mt-1">Ver PDF completo</span>
-                            </a>
-                            <a id="tech3DLink" href="#" target="_blank" class="flex flex-col items-center justify-center p-6 rounded-lg border border-gray-200 bg-gray-50 hover:border-wood hover:bg-white transition-colors group">
-                                <i class="fas fa-cube text-3xl text-gray-400 group-hover:text-wood mb-3 transition-colors"></i>
-                                <span class="font-bold text-gray-800 group-hover:text-wood transition-colors">Bloco 3D (Warehouse)</span>
-                                <span class="text-xs text-gray-500 mt-1">Baixar modelo SketchUp</span>
-                            </a>
+                        <h4 class="text-sm font-bold text-gray-700 mb-4 uppercase tracking-wider">Pesos, Volumes e Documentação por Referência</h4>
+                        <div class="overflow-x-auto border border-gray-100 rounded-lg">
+                            <table class="w-full text-left text-sm text-gray-600 border-collapse min-w-[600px]">
+                                <thead>
+                                    <tr class="border-b-2 border-gray-200 text-gray-900 bg-gray-50">
+                                        <th class="py-3 pl-4 font-semibold rounded-tl-lg">Ref.</th>
+                                        <th class="py-3 font-semibold text-center">Peso Líq.</th>
+                                        <th class="py-3 font-semibold text-center">Peso Bruto</th>
+                                        <th class="py-3 font-semibold text-center">Cubagem</th>
+                                        <th class="py-3 font-semibold text-center">Volumes</th>
+                                        <th class="py-3 font-semibold text-center" title="Manual de Montagem">Manual</th>
+                                        <th class="py-3 font-semibold text-center pr-4 rounded-tr-lg" title="Bloco 3D">3D</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="techTechTableBody" class="divide-y divide-gray-100"></tbody>
+                            </table>
                         </div>
                     </div>
 
@@ -267,7 +254,7 @@
         }
 
         // ==========================================
-        // LÓGICA DE VITRINE
+        // LÓGICA DE VITRINE E MODAL PRINCIPAL
         // ==========================================
         function updateCategoryButtons(cat) {
             document.querySelectorAll('.cat-btn').forEach(btn => {
@@ -304,9 +291,6 @@
             });
         }
 
-        // ==========================================
-        // LÓGICA DO MODAL PRINCIPAL 
-        // ==========================================
         function openModal(id_linha) {
             linhaAtiva = db_linhas.find(l => l.ID_LINHA === id_linha);
             if(!linhaAtiva) return;
@@ -326,7 +310,6 @@
             mainImg.onerror = function() { this.src = 'https://placehold.co/600x400/f3f4f6/8B5A2B?text=Imagem+Indisponível'; };
             mainImg.src = linhaAtiva.IMAGEM_BASE;
 
-            // Galeria
             const thumbContainer = document.getElementById('modalThumbnails');
             thumbContainer.innerHTML = '';
             
@@ -382,7 +365,6 @@
                 thumbContainer.appendChild(vidThumb);
             }
 
-            // Tabela de Refs
             const tbody = document.getElementById('tableReferencesBody');
             tbody.innerHTML = '';
             const refs = db_referencias.filter(r => r.ID_LINHA === id_linha);
@@ -436,15 +418,12 @@
         }
 
         // ==========================================
-        // LÓGICA DO MODAL TÉCNICO (ABAS)
+        // LÓGICA DO MODAL TÉCNICO (ABAS E LINKS INDIVIDUAIS)
         // ==========================================
         function switchTechTab(tabId) {
-            // Esconde todos os conteúdos
             document.querySelectorAll('.tech-tab-content').forEach(el => el.classList.add('hidden'));
-            // Mostra o ativo
             document.getElementById(`tab-${tabId}`).classList.remove('hidden');
             
-            // Estiliza os botões
             document.querySelectorAll('.tech-tab-btn').forEach(btn => {
                 if(btn.dataset.tab === tabId) {
                     btn.classList.add('border-gray-900', 'text-gray-900');
@@ -463,30 +442,42 @@
             const refsDaFamilia = db_referencias.filter(r => r.ID_LINHA === linhaAtiva.ID_LINHA);
             const idsRefsFamilia = refsDaFamilia.map(r => String(r.REFERENCIA));
             
-            // --- ABA: LOGÍSTICA ---
+            // --- ABA: LOGÍSTICA E ARQUIVOS (ATUALIZADA) ---
             const techBody = document.getElementById('techTechTableBody');
             techBody.innerHTML = '';
-            refsDaFamilia.forEach(ref => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td class="py-3 pl-4 font-medium text-gray-900">${ref.REFERENCIA || '-'}</td>
-                    <td class="py-3 text-center text-gray-600">${ref.PESO_LIQ ? ref.PESO_LIQ + ' kg' : '-'}</td>
-                    <td class="py-3 text-center text-gray-600">${ref.PESO_BRUTO ? ref.PESO_BRUTO + ' kg' : '-'}</td>
-                    <td class="py-3 text-center text-gray-600">${ref.CUBAGEM ? ref.CUBAGEM + ' m³' : '-'}</td>
-                    <td class="py-3 text-center text-gray-600 pr-4">${ref.VOLUMES || '-'}</td>`;
-                techBody.appendChild(tr);
-            });
+            
+            if(refsDaFamilia.length === 0) {
+                techBody.innerHTML = '<tr><td colspan="7" class="py-4 text-center text-gray-400">Nenhuma referência encontrada.</td></tr>';
+            } else {
+                refsDaFamilia.forEach(ref => {
+                    const tr = document.createElement('tr');
+                    
+                    // Lógica de Ativação/Desativação dos botões baseada nos dados do Sheets
+                    const manualHref = ref.URL_MANUAL ? ref.URL_MANUAL : '#';
+                    const manualClass = ref.URL_MANUAL ? 'text-red-500 hover:text-red-700 cursor-pointer' : 'text-gray-300 pointer-events-none';
+                    
+                    const tridHref = ref.LINK_3D ? ref.LINK_3D : '#';
+                    const tridClass = ref.LINK_3D ? 'text-blue-500 hover:text-blue-700 cursor-pointer' : 'text-gray-300 pointer-events-none';
 
-            // Links (Manual e 3D)
-            const manualLink = document.getElementById('techManualLink');
-            manualLink.href = linhaAtiva.URL_MANUAL || '#'; 
-            if(!linhaAtiva.URL_MANUAL) manualLink.classList.add('opacity-50', 'pointer-events-none');
-            else manualLink.classList.remove('opacity-50', 'pointer-events-none');
-
-            const link3D = document.getElementById('tech3DLink');
-            link3D.href = linhaAtiva.LINK_3D || '#'; 
-            if(!linhaAtiva.LINK_3D) link3D.classList.add('opacity-50', 'pointer-events-none');
-            else link3D.classList.remove('opacity-50', 'pointer-events-none');
+                    tr.innerHTML = `
+                        <td class="py-3 pl-4 font-medium text-gray-900">${ref.REFERENCIA || '-'}</td>
+                        <td class="py-3 text-center text-gray-600">${ref.PESO_LIQ ? ref.PESO_LIQ + ' kg' : '-'}</td>
+                        <td class="py-3 text-center text-gray-600">${ref.PESO_BRUTO ? ref.PESO_BRUTO + ' kg' : '-'}</td>
+                        <td class="py-3 text-center text-gray-600">${ref.CUBAGEM ? ref.CUBAGEM + ' m³' : '-'}</td>
+                        <td class="py-3 text-center text-gray-600">${ref.VOLUMES || '-'}</td>
+                        <td class="py-3 text-center">
+                            <a href="${manualHref}" target="_blank" class="${manualClass} transition-colors inline-block" title="Baixar Manual de Montagem">
+                                <i class="fas fa-file-pdf text-xl"></i>
+                            </a>
+                        </td>
+                        <td class="py-3 text-center pr-4">
+                            <a href="${tridHref}" target="_blank" class="${tridClass} transition-colors inline-block" title="Ver Bloco 3D no Warehouse">
+                                <i class="fas fa-cube text-xl"></i>
+                            </a>
+                        </td>`;
+                    techBody.appendChild(tr);
+                });
+            }
 
             // --- ABA: DIMENSÕES ---
             const thead = document.getElementById('techMatrixHead');
