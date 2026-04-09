@@ -7,6 +7,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <style>
         body { font-family: 'Lato', sans-serif; background-color: #f8f8f8; color: #333; }
@@ -34,9 +36,15 @@
 
         .loader { border: 4px solid #f3f3f3; border-top: 4px solid #8B5A2B; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        #toast { transition: opacity 0.3s, transform 0.3s; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col relative">
+
+    <div id="toast" class="fixed top-20 left-1/2 transform -translate-x-1/2 -translate-y-10 opacity-0 pointer-events-none bg-gray-900 text-white px-6 py-3 rounded-full shadow-lg z-[100] flex items-center text-sm font-medium">
+        <i class="fas fa-check-circle text-green-400 mr-2"></i> Link copiado com sucesso!
+    </div>
 
     <header class="bg-white shadow-sm sticky top-0 z-50">
         <div class="container mx-auto px-4 py-4 flex justify-between items-center">
@@ -55,9 +63,9 @@
     <div class="bg-gray-900 text-white py-16 px-4 relative overflow-hidden">
         <div class="absolute inset-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center"></div>
         <div class="container mx-auto relative z-10 text-center">
-            <h1 class="text-4xl md:text-6xl font-bold mb-4">Catálogo Virtual - Matrezan</h1>
+            <h1 class="text-4xl md:text-6xl font-bold mb-4">Lançamentos 2026</h1>
             <p class="text-xl text-gray-300 max-w-2xl mx-auto font-light">
-                Design curvo e sofisticação para ambientes contemporâneos.
+                Design orgânico, materiais nobres e a essência da marcenaria contemporânea.
             </p>
         </div>
     </div>
@@ -96,7 +104,7 @@
         <div class="flex items-center justify-center min-h-screen px-4 py-4">
             <div class="bg-white rounded-lg shadow-2xl max-w-5xl w-full max-h-[90vh] overflow-y-auto md:overflow-hidden relative z-10 transform transition-transform scale-95 flex flex-col md:flex-row">
                 
-                <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-900 z-20 bg-white rounded-full w-8 h-8 flex items-center justify-center shadow">
+                <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-900 z-20 bg-white rounded-full w-8 h-8 flex items-center justify-center shadow border border-gray-100">
                     <i class="fas fa-times text-xl"></i>
                 </button>
 
@@ -107,16 +115,19 @@
                         <span id="modalRefTag" class="hidden absolute bottom-4 left-4 bg-white px-3 py-1 text-xs font-bold shadow rounded border border-gray-100 text-gray-800"></span>
                     </div>
 
-                    <div id="modalThumbnails" class="flex gap-3 overflow-x-auto w-full justify-start md:justify-center min-h-[70px] py-2 px-1 thumb-scroll">
-                        </div>
+                    <div id="modalThumbnails" class="flex gap-3 overflow-x-auto w-full justify-start md:justify-center min-h-[70px] py-2 px-1 thumb-scroll"></div>
                 </div>
 
                 <div class="md:w-7/12 flex flex-col md:max-h-[90vh] flex-shrink-0">
-                    <div class="p-6 md:p-8 pb-4 border-b border-gray-100 flex-shrink-0">
-                        <div class="mb-1">
+                    <div class="p-6 md:p-8 pb-4 border-b border-gray-100 flex-shrink-0 relative">
+                        <button onclick="shareActiveProduct()" class="absolute top-6 md:top-8 right-6 md:right-8 text-gray-400 hover:text-wood transition-colors p-2 rounded-full hover:bg-gray-50" title="Compartilhar este produto">
+                            <i class="fas fa-share-nodes text-xl"></i>
+                        </button>
+                        
+                        <div class="mb-1 pr-10">
                             <span id="modalCategory" class="text-xs font-bold tracking-widest text-wood uppercase"></span>
                         </div>
-                        <h2 id="modalTitle" class="text-3xl font-bold mb-2 serif-font text-gray-900"></h2>
+                        <h2 id="modalTitle" class="text-3xl font-bold mb-2 serif-font text-gray-900 pr-10"></h2>
                         <p id="modalDesc" class="text-gray-500 text-sm leading-relaxed"></p>
                     </div>
 
@@ -131,8 +142,7 @@
                                         <th class="pb-2 font-semibold">Formato</th>
                                     </tr>
                                 </thead>
-                                <tbody id="tableReferencesBody">
-                                    </tbody>
+                                <tbody id="tableReferencesBody"></tbody>
                             </table>
                         </div>
                     </div>
@@ -180,8 +190,7 @@
                     
                     <div id="tab-acabamentos" class="tech-tab-content hidden">
                         <h4 class="text-sm font-bold text-gray-700 mb-4 uppercase tracking-wider">Combinações e Texturas</h4>
-                        <div id="techAcabamentos" class="bg-white rounded-lg border border-gray-100 p-5">
-                            </div>
+                        <div id="techAcabamentos" class="bg-white rounded-lg border border-gray-100 p-5"></div>
                     </div>
 
                     <div id="tab-dimensoes" class="tech-tab-content hidden">
@@ -200,22 +209,33 @@
                     </div>
 
                     <div id="tab-logistica" class="tech-tab-content hidden">
-                        <h4 class="text-sm font-bold text-gray-700 mb-4 uppercase tracking-wider">Pesos, Volumes e Documentação por Referência</h4>
-                        <div class="overflow-x-auto border border-gray-100 rounded-lg">
-                            <table class="w-full text-left text-sm text-gray-600 border-collapse min-w-[600px]">
-                                <thead>
-                                    <tr class="border-b-2 border-gray-200 text-gray-900 bg-gray-50">
-                                        <th class="py-3 pl-4 font-semibold rounded-tl-lg">Ref.</th>
-                                        <th class="py-3 font-semibold text-center">Peso Líq.</th>
-                                        <th class="py-3 font-semibold text-center">Peso Bruto</th>
-                                        <th class="py-3 font-semibold text-center">Cubagem</th>
-                                        <th class="py-3 font-semibold text-center">Volumes</th>
-                                        <th class="py-3 font-semibold text-center" title="Manual de Montagem">Manual</th>
-                                        <th class="py-3 font-semibold text-center pr-4 rounded-tr-lg" title="Bloco 3D">3D</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="techTechTableBody" class="divide-y divide-gray-100"></tbody>
-                            </table>
+                        <div class="mb-8">
+                            <h4 class="text-sm font-bold text-gray-700 mb-4 uppercase tracking-wider">Pesos, Volumes e Arquivos por Referência</h4>
+                            <div class="overflow-x-auto border border-gray-100 rounded-lg">
+                                <table class="w-full text-left text-sm text-gray-600 border-collapse min-w-[600px]">
+                                    <thead>
+                                        <tr class="border-b-2 border-gray-200 text-gray-900 bg-gray-50">
+                                            <th class="py-3 pl-4 font-semibold rounded-tl-lg">Ref.</th>
+                                            <th class="py-3 font-semibold text-center">Peso Líq.</th>
+                                            <th class="py-3 font-semibold text-center">Peso Bruto</th>
+                                            <th class="py-3 font-semibold text-center">Cubagem</th>
+                                            <th class="py-3 font-semibold text-center">Volumes</th>
+                                            <th class="py-3 font-semibold text-center" title="Manual de Montagem">Manual</th>
+                                            <th class="py-3 font-semibold text-center pr-4 rounded-tr-lg" title="Bloco 3D">3D</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="techTechTableBody" class="divide-y divide-gray-100"></tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="border-t border-gray-200 pt-6">
+                            <h4 class="text-sm font-bold text-gray-700 mb-4 uppercase tracking-wider">Apresentação</h4>
+                            <a href="#" onclick="gerarPDF(event)" id="btnGerarPDF" class="flex flex-col items-center justify-center p-6 rounded-lg border border-gray-200 bg-gray-50 hover:border-wood hover:bg-white transition-colors group max-w-sm mx-auto">
+                                <i class="fas fa-file-invoice text-3xl text-gray-400 group-hover:text-wood mb-3 transition-colors"></i>
+                                <span class="font-bold text-gray-800 group-hover:text-wood transition-colors">Gerar Ficha Técnica (PDF)</span>
+                                <span class="text-xs text-gray-500 mt-1 text-center">Baixe um documento consolidado com fotos, medidas e pesos para enviar ao cliente.</span>
+                            </a>
                         </div>
                     </div>
 
@@ -247,10 +267,48 @@
                 db_opcoes_produto = data.opcoes_produto || [];
                 db_acabamentos = data.acabamentos || [];
                 filterProducts('all'); 
+                
+                const urlParams = new URLSearchParams(window.location.search);
+                const produtoId = urlParams.get('p');
+                if(produtoId && db_linhas.find(l => String(l.ID_LINHA) === produtoId)) {
+                    openModal(produtoId);
+                }
+
             } catch (error) {
                 console.error("Erro:", error);
                 document.getElementById('productGrid').innerHTML = '<p class="col-span-full text-center text-red-500 py-10">Erro de conexão.</p>';
             }
+        }
+
+        // ==========================================
+        // LÓGICA DE COMPARTILHAMENTO E TOAST
+        // ==========================================
+        function showToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.remove('opacity-0', '-translate-y-10');
+            toast.classList.add('opacity-100', 'translate-y-0');
+            setTimeout(() => {
+                toast.classList.remove('opacity-100', 'translate-y-0');
+                toast.classList.add('opacity-0', '-translate-y-10');
+            }, 3000);
+        }
+
+        function shareProductCard(event, nome, id) {
+            event.stopPropagation(); 
+            const baseUrl = window.location.href.split('?')[0];
+            const shareUrl = `${baseUrl}?p=${id}`;
+            const shareText = `Confira a linha ${nome} no Catálogo Matrezan 2026: `;
+            if (navigator.share) navigator.share({ title: `Matrezan - ${nome}`, text: shareText, url: shareUrl }).catch(console.error);
+            else navigator.clipboard.writeText(shareText + shareUrl).then(showToast);
+        }
+
+        function shareActiveProduct() {
+            if(!linhaAtiva) return;
+            const baseUrl = window.location.href.split('?')[0];
+            const shareUrl = `${baseUrl}?p=${linhaAtiva.ID_LINHA}`;
+            const shareText = `Confira a linha ${linhaAtiva.NOME_LINHA} no Catálogo Matrezan 2026: `;
+            if (navigator.share) navigator.share({ title: `Matrezan - ${linhaAtiva.NOME_LINHA}`, text: shareText, url: shareUrl }).catch(console.error);
+            else navigator.clipboard.writeText(shareText + shareUrl).then(showToast);
         }
 
         // ==========================================
@@ -277,11 +335,15 @@
                 const catName = btnCat ? btnCat.innerText : linha.CATEGORIA;
                 
                 const card = document.createElement('div');
-                card.className = 'product-card bg-white rounded-lg border border-gray-100 overflow-hidden cursor-pointer group flex flex-col';
+                card.className = 'product-card bg-white rounded-lg border border-gray-100 overflow-hidden cursor-pointer group flex flex-col relative';
                 card.onclick = () => openModal(linha.ID_LINHA);
+                
                 card.innerHTML = `
                     <div class="h-56 overflow-hidden relative bg-gray-50 flex items-center justify-center p-4 border-b border-gray-100">
                         <img src="${linha.IMAGEM_BASE}" onerror="this.src='https://placehold.co/600x400/f3f4f6/8B5A2B?text=Sem+Foto'" alt="${linha.NOME_LINHA}" class="w-full h-full object-contain mix-blend-multiply transition duration-500 group-hover:scale-105">
+                        <button onclick="shareProductCard(event, '${linha.NOME_LINHA}', '${linha.ID_LINHA}')" class="absolute top-3 right-3 bg-white/90 backdrop-blur w-9 h-9 rounded-full flex items-center justify-center text-gray-500 hover:text-wood hover:shadow transition-all z-10" title="Compartilhar">
+                            <i class="fas fa-share-nodes"></i>
+                        </button>
                     </div>
                     <div class="p-5 flex flex-col flex-grow">
                         <p class="text-[10px] text-wood font-bold uppercase tracking-wider mb-2">${catName}</p>
@@ -292,8 +354,11 @@
         }
 
         function openModal(id_linha) {
-            linhaAtiva = db_linhas.find(l => l.ID_LINHA === id_linha);
+            linhaAtiva = db_linhas.find(l => String(l.ID_LINHA) === String(id_linha));
             if(!linhaAtiva) return;
+
+            const baseUrl = window.location.href.split('?')[0];
+            window.history.pushState({}, '', `${baseUrl}?p=${id_linha}`);
 
             document.getElementById('modalTitle').innerText = linhaAtiva.NOME_LINHA;
             document.getElementById('modalDesc').innerText = linhaAtiva.DESCRICAO_LINHA;
@@ -306,7 +371,6 @@
             mainVideo.classList.add('hidden');
             mainVideo.pause();
             refTag.classList.add('hidden');
-            
             mainImg.onerror = function() { this.src = 'https://placehold.co/600x400/f3f4f6/8B5A2B?text=Imagem+Indisponível'; };
             mainImg.src = linhaAtiva.IMAGEM_BASE;
 
@@ -367,7 +431,7 @@
 
             const tbody = document.getElementById('tableReferencesBody');
             tbody.innerHTML = '';
-            const refs = db_referencias.filter(r => r.ID_LINHA === id_linha);
+            const refs = db_referencias.filter(r => String(r.ID_LINHA) === String(id_linha));
             
             refs.forEach(ref => {
                 const tr = document.createElement('tr');
@@ -414,11 +478,15 @@
             mainVideo.pause(); 
             modal.classList.add('opacity-0', 'pointer-events-none');
             document.body.classList.remove('modal-active');
+            
+            const baseUrl = window.location.href.split('?')[0];
+            window.history.pushState({}, '', baseUrl);
+
             setTimeout(() => modal.classList.add('hidden'), 300);
         }
 
         // ==========================================
-        // LÓGICA DO MODAL TÉCNICO (ABAS E LINKS INDIVIDUAIS)
+        // LÓGICA DO MODAL TÉCNICO (ABAS E LINKS)
         // ==========================================
         function switchTechTab(tabId) {
             document.querySelectorAll('.tech-tab-content').forEach(el => el.classList.add('hidden'));
@@ -439,10 +507,10 @@
             if(!linhaAtiva) return;
             document.getElementById('techTitle').innerText = linhaAtiva.NOME_LINHA;
 
-            const refsDaFamilia = db_referencias.filter(r => r.ID_LINHA === linhaAtiva.ID_LINHA);
+            const refsDaFamilia = db_referencias.filter(r => String(r.ID_LINHA) === String(linhaAtiva.ID_LINHA));
             const idsRefsFamilia = refsDaFamilia.map(r => String(r.REFERENCIA));
             
-            // --- ABA: LOGÍSTICA E ARQUIVOS (ATUALIZADA) ---
+            // --- ABA: LOGÍSTICA ---
             const techBody = document.getElementById('techTechTableBody');
             techBody.innerHTML = '';
             
@@ -451,11 +519,8 @@
             } else {
                 refsDaFamilia.forEach(ref => {
                     const tr = document.createElement('tr');
-                    
-                    // Lógica de Ativação/Desativação dos botões baseada nos dados do Sheets
                     const manualHref = ref.URL_MANUAL ? ref.URL_MANUAL : '#';
                     const manualClass = ref.URL_MANUAL ? 'text-red-500 hover:text-red-700 cursor-pointer' : 'text-gray-300 pointer-events-none';
-                    
                     const tridHref = ref.LINK_3D ? ref.LINK_3D : '#';
                     const tridClass = ref.LINK_3D ? 'text-blue-500 hover:text-blue-700 cursor-pointer' : 'text-gray-300 pointer-events-none';
 
@@ -466,12 +531,12 @@
                         <td class="py-3 text-center text-gray-600">${ref.CUBAGEM ? ref.CUBAGEM + ' m³' : '-'}</td>
                         <td class="py-3 text-center text-gray-600">${ref.VOLUMES || '-'}</td>
                         <td class="py-3 text-center">
-                            <a href="${manualHref}" target="_blank" class="${manualClass} transition-colors inline-block" title="Baixar Manual de Montagem">
+                            <a href="${manualHref}" target="_blank" class="${manualClass} transition-colors inline-block" title="Baixar Manual">
                                 <i class="fas fa-file-pdf text-xl"></i>
                             </a>
                         </td>
                         <td class="py-3 text-center pr-4">
-                            <a href="${tridHref}" target="_blank" class="${tridClass} transition-colors inline-block" title="Ver Bloco 3D no Warehouse">
+                            <a href="${tridHref}" target="_blank" class="${tridClass} transition-colors inline-block" title="Ver Bloco 3D">
                                 <i class="fas fa-cube text-xl"></i>
                             </a>
                         </td>`;
@@ -592,10 +657,7 @@
                 } else { acabamentosCont.innerHTML = '<p class="text-sm text-gray-400">Nenhum acabamento específico cadastrado.</p>'; }
             } else { acabamentosCont.innerHTML = '<p class="text-sm text-gray-400">Nenhum acabamento específico cadastrado.</p>'; }
 
-            // Configura a view inicial do Modal Técnico
             switchTechTab(tabId);
-
-            // Exibe o modal
             const modal = document.getElementById('techModal');
             modal.classList.remove('hidden');
             setTimeout(() => { modal.classList.remove('opacity-0', 'pointer-events-none'); }, 10);
@@ -605,6 +667,124 @@
             const modal = document.getElementById('techModal');
             modal.classList.add('opacity-0', 'pointer-events-none');
             setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        // ==========================================
+        // LÓGICA DO GERADOR DE PDF
+        // ==========================================
+        function gerarPDF(event) {
+            event.preventDefault();
+            if(!linhaAtiva) return;
+
+            const btn = document.getElementById('btnGerarPDF');
+            const oldContent = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin text-3xl text-wood mb-3"></i><span class="font-bold text-gray-800">Gerando...</span>';
+            btn.style.pointerEvents = 'none';
+
+            // Cria o "molde" invisível do PDF na tela
+            const pdfDiv = document.createElement('div');
+            pdfDiv.style.position = 'absolute';
+            pdfDiv.style.left = '-9999px';
+            pdfDiv.style.top = '0';
+            pdfDiv.style.width = '800px'; 
+            pdfDiv.style.backgroundColor = '#ffffff';
+            pdfDiv.style.padding = '40px';
+            
+            // Pega as 2 primeiras fotos da galeria
+            let galeriaArr = [];
+            if(linhaAtiva.IMAGEM_BASE) galeriaArr.push(linhaAtiva.IMAGEM_BASE);
+            if(linhaAtiva.GALERIA_IMAGENS) {
+                const extras = linhaAtiva.GALERIA_IMAGENS.split('|').map(u => u.trim()).filter(u => u !== '');
+                galeriaArr = [...galeriaArr, ...extras];
+            }
+            galeriaArr = [...new Set(galeriaArr)];
+            
+            const img1 = galeriaArr[0] || 'https://placehold.co/400x300/f3f4f6/8B5A2B?text=Sem+Foto';
+            const img2 = galeriaArr.length > 1 ? galeriaArr[1] : 'https://placehold.co/400x300/f3f4f6/8B5A2B?text=Sem+Foto+Adicional';
+            
+            // Clona tabelas para dentro do PDF
+            const logisticaTable = document.getElementById('techTechTableBody').innerHTML;
+            const matrixHead = document.getElementById('techMatrixHead').innerHTML;
+            const matrixBody = document.getElementById('techMatrixBody').innerHTML;
+            const croquiSrc = document.getElementById('techDimImg').src;
+
+            // Monta o layout limpo e elegante do PDF
+            pdfDiv.innerHTML = `
+                <div style="font-family: 'Lato', sans-serif; color: #333;">
+                    <div style="border-bottom: 2px solid #8B5A2B; padding-bottom: 10px; margin-bottom: 30px;">
+                        <h1 style="font-family: 'Playfair Display', serif; font-size: 32px; font-weight: bold; margin: 0; color: #111827;">Matrezan</h1>
+                        <p style="font-size: 14px; color: #6b7280; text-transform: uppercase; letter-spacing: 2px; margin-top: 5px;">Ficha Técnica - ${linhaAtiva.NOME_LINHA}</p>
+                    </div>
+                    
+                    <div style="display: flex; gap: 20px; margin-bottom: 40px; height: 280px;">
+                        <div style="width: 50%; background: #f9fafb; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 10px;">
+                            <img src="${img1}" style="max-width: 100%; max-height: 100%; object-fit: contain;" crossorigin="anonymous">
+                        </div>
+                        <div style="width: 50%; background: #f9fafb; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 10px;">
+                            <img src="${img2}" style="max-width: 100%; max-height: 100%; object-fit: contain;" crossorigin="anonymous">
+                        </div>
+                    </div>
+
+                    <h2 style="font-size: 16px; font-weight: bold; text-transform: uppercase; color: #374151; margin-bottom: 15px;">Informações Logísticas</h2>
+                    <table style="width: 100%; text-align: left; font-size: 13px; border-collapse: collapse; margin-bottom: 40px;">
+                        <thead style="background-color: #f3f4f6;">
+                            <tr>
+                                <th style="padding: 10px; border: 1px solid #e5e7eb;">Ref.</th>
+                                <th style="padding: 10px; border: 1px solid #e5e7eb; text-align: center;">Peso Líq.</th>
+                                <th style="padding: 10px; border: 1px solid #e5e7eb; text-align: center;">Peso Bruto</th>
+                                <th style="padding: 10px; border: 1px solid #e5e7eb; text-align: center;">Cubagem</th>
+                                <th style="padding: 10px; border: 1px solid #e5e7eb; text-align: center;">Volumes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${logisticaTable.replace(/<td class=".*?<a href=.*?<\/td>/g, '') /* Remove botões 3D/PDF da tabela na hora de imprimir */}
+                        </tbody>
+                    </table>
+
+                    <h2 style="font-size: 16px; font-weight: bold; text-transform: uppercase; color: #374151; margin-bottom: 15px;">Dimensões e Croqui</h2>
+                    <div style="display: flex; gap: 20px;">
+                        <div style="width: 35%; display: flex; align-items: center; justify-content: center;">
+                             <img src="${croquiSrc}" style="max-width: 100%; max-height: 200px; object-fit: contain;" crossorigin="anonymous">
+                        </div>
+                        <div style="width: 65%;">
+                            <table style="width: 100%; text-align: left; font-size: 13px; border-collapse: collapse;">
+                                <thead style="background-color: #f3f4f6;">
+                                    ${matrixHead}
+                                </thead>
+                                <tbody>
+                                    ${matrixBody}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 50px; text-align: center; font-size: 11px; color: #9ca3af; border-top: 1px solid #f3f4f6; padding-top: 15px;">
+                        Documento gerado eletronicamente via Catálogo Virtual Matrezan 2026. As especificações podem sofrer alterações.
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(pdfDiv);
+
+            const opt = {
+                margin:       15,
+                filename:     `Matrezan_Ficha_${linhaAtiva.NOME_LINHA.replace(/\s+/g, '_')}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true, logging: false },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            html2pdf().set(opt).from(pdfDiv).save().then(() => {
+                document.body.removeChild(pdfDiv);
+                btn.innerHTML = oldContent;
+                btn.style.pointerEvents = 'auto';
+            }).catch(err => {
+                console.error(err);
+                document.body.removeChild(pdfDiv);
+                btn.innerHTML = oldContent;
+                btn.style.pointerEvents = 'auto';
+                alert("Erro ao gerar PDF. Verifique se as imagens estão acessíveis publicamente.");
+            });
         }
 
         document.addEventListener('keydown', function(event) {
