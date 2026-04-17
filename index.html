@@ -146,16 +146,20 @@
                 </div>
 
                 <div class="md:w-7/12 flex flex-col md:max-h-[90vh] flex-shrink-0">
-                    <div class="p-6 md:p-8 pb-4 border-b border-gray-100 flex-shrink-0 relative">
-                        <button onclick="shareActiveProduct()" class="absolute top-6 md:top-8 right-6 md:right-8 text-gray-400 hover:text-wood transition-colors p-2 rounded-full hover:bg-gray-50" title="Compartilhar este produto">
-                            <i class="fas fa-share-nodes text-xl"></i>
-                        </button>
-                        
-                        <div class="mb-1 pr-10">
-                            <span id="modalCategory" class="text-xs font-bold tracking-widest text-wood uppercase"></span>
+                    <div class="p-6 pt-10 md:p-8 md:pt-12 pb-4 border-b border-gray-100 flex-shrink-0 relative">
+                        <div class="flex justify-between items-start gap-4">
+                            <div class="flex-1 pr-4">
+                                <div class="mb-1">
+                                    <span id="modalCategory" class="text-xs font-bold tracking-widest text-wood uppercase"></span>
+                                </div>
+                                <h2 id="modalTitle" class="text-3xl font-bold mb-2 serif-font text-gray-900"></h2>
+                            </div>
+                            
+                            <button onclick="shareActiveProduct()" class="flex-shrink-0 text-gray-500 hover:text-wood transition-all w-10 h-10 flex items-center justify-center rounded-full bg-gray-50 hover:bg-gray-100 border border-gray-200 shadow-sm" title="Compartilhar este produto">
+                                <i class="fas fa-share-nodes text-lg"></i>
+                            </button>
                         </div>
-                        <h2 id="modalTitle" class="text-3xl font-bold mb-2 serif-font text-gray-900 pr-10"></h2>
-                        <p id="modalDesc" class="text-gray-500 text-sm leading-relaxed"></p>
+                        <p id="modalDesc" class="text-gray-500 text-sm leading-relaxed mt-2"></p>
                     </div>
 
                     <div class="p-6 md:p-8 pt-4 overflow-visible md:overflow-y-auto table-scroll flex-grow">
@@ -277,6 +281,12 @@
                                     </thead>
                                     <tbody id="techTechTableBody" class="divide-y divide-gray-100"></tbody>
                                 </table>
+                            </div>
+                        </div>
+
+                        <div id="techAdditionalInfoContainer" class="hidden mb-8 border-t border-gray-200 pt-6">
+                            <h4 class="text-sm font-bold text-gray-700 mb-4 uppercase tracking-wider">Detalhes Adicionais</h4>
+                            <div id="techAdditionalInfoText" class="text-sm text-gray-600 leading-relaxed bg-gray-50 p-5 rounded-lg border border-gray-100 whitespace-pre-wrap">
                             </div>
                         </div>
 
@@ -860,7 +870,7 @@
         };
 
         // ==========================================
-        // DIMENSÕES E MODAL TÉCNICO
+        // ABAS TÉCNICAS
         // ==========================================
         function openTechModalTab(tabId) {
             if(!linhaAtiva) return;
@@ -903,7 +913,20 @@
                 });
             }
 
-            // --- ABA: DIMENSÕES (COM OCULTAÇÃO DE TABELA VAZIA) ---
+            // PREENCHIMENTO DO NOVO BLOCO DE INFORMAÇÕES TÉCNICAS ADICIONAIS
+            const addInfoContainer = document.getElementById('techAdditionalInfoContainer');
+            const addInfoText = document.getElementById('techAdditionalInfoText');
+            
+            const detalhesAdicionais = linhaAtiva.INFO_TECNICAS || linhaAtiva.DETALHES_TECNICOS || linhaAtiva.OBSERVACOES;
+
+            if (detalhesAdicionais && String(detalhesAdicionais).trim() !== '') {
+                addInfoText.innerHTML = String(detalhesAdicionais).replace(/\n/g, '<br>');
+                addInfoContainer.classList.remove('hidden');
+            } else {
+                addInfoContainer.classList.add('hidden');
+            }
+
+            // --- ABA: DIMENSÕES ---
             const thead = document.getElementById('techMatrixHead');
             const tbodyMatriz = document.getElementById('techMatrixBody');
             const matrixContainer = document.getElementById('techMatrixContainer');
@@ -969,7 +992,6 @@
                 });
             } else {
                 matrixContainer.classList.add('hidden');
-                // Expande e centraliza a imagem se não houver tabela
                 imageContainer.className = "w-full max-w-3xl mx-auto p-6 bg-gray-50 rounded-xl flex items-center justify-center border border-gray-100 min-h-[350px] transition-all duration-300 shadow-inner";
             }
 
@@ -1032,6 +1054,7 @@
             const croquiSrc = document.getElementById('techDimImg').src;
 
             const refsDaFamilia = db_referencias.filter(r => String(r.ID_LINHA) === String(linhaAtiva.ID_LINHA));
+            const idsRefsFamilia = refsDaFamilia.map(r => String(r.REFERENCIA));
 
             let logisticaRows = '';
             refsDaFamilia.forEach(ref => {
@@ -1045,7 +1068,6 @@
                     </tr>`;
             });
 
-            // Lógica do PDF para omitir tabela de medidas se não houver dados
             const isMatrixHidden = document.getElementById('techMatrixContainer').classList.contains('hidden');
             let dimensoesHTML = '';
 
@@ -1075,6 +1097,18 @@
                     <h2 style="font-size: 18px; font-weight: bold; text-transform: uppercase; color: #374151; margin-bottom: 15px; border-left: 4px solid #8B5A2B; padding-left: 10px;">Croqui de Dimensões</h2>
                     <div style="display: flex; align-items: center; justify-content: center; padding: 20px; background: #f9fafb; border-radius: 8px; width: 100%; text-align: center;">
                          <img src="${croquiSrc}" style="max-width: 100%; max-height: 400px; object-fit: contain;" crossorigin="anonymous">
+                    </div>
+                `;
+            }
+
+            // VERIFICA SE TEM INFORMAÇÕES ADICIONAIS PARA O PDF
+            const detalhesAdicionais = linhaAtiva.INFO_TECNICAS || linhaAtiva.DETALHES_TECNICOS || linhaAtiva.OBSERVACOES;
+            let detalhesExtraPDF = '';
+            if (detalhesAdicionais && String(detalhesAdicionais).trim() !== '') {
+                detalhesExtraPDF = `
+                    <div style="margin-top: 30px;">
+                        <h2 style="font-size: 18px; font-weight: bold; text-transform: uppercase; color: #374151; margin-bottom: 10px; border-left: 4px solid #8B5A2B; padding-left: 10px;">Detalhes Adicionais</h2>
+                        <p style="font-size: 13px; color: #4b5563; line-height: 1.5; background: #f9fafb; padding: 15px; border-radius: 6px; border: 1px solid #e5e7eb; margin: 0; white-space: pre-wrap;">${String(detalhesAdicionais)}</p>
                     </div>
                 `;
             }
@@ -1122,6 +1156,7 @@
                     </table>
 
                     ${dimensoesHTML}
+                    ${detalhesExtraPDF}
                     
                     <div style="margin-top: 50px; text-align: center; font-size: 11px; color: #9ca3af; border-top: 1px solid #e5e7eb; padding-top: 15px;">
                         Documento gerado eletronicamente via Catálogo Virtual Matrezan 2026. As especificações podem sofrer alterações.
