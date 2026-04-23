@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Catálogo Virtual - MATREZAN</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#8B5A2B">
+    <link rel="apple-touch-icon" href="icone-192.png">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
@@ -1139,6 +1144,7 @@
         document.addEventListener('keydown', function(event) {
             const zoomLightbox = document.getElementById('zoomLightbox');
             const techModal = document.getElementById('techModal');
+            const productModal = document.getElementById('productModal'); // Ajuste adicionado
             
             // Navegação de Zoom via Setas do Teclado
             if (!zoomLightbox.classList.contains('hidden')) {
@@ -1156,7 +1162,7 @@
                     closeZoom();
                 } else if (!techModal.classList.contains('hidden')) {
                     closeTechModal();
-                } else {
+                } else if (!productModal.classList.contains('hidden')) {
                     closeModal();
                 }
             }
@@ -1168,16 +1174,26 @@
         document.addEventListener('DOMContentLoaded', () => {
             const lb = document.getElementById('zoomLightbox');
             if(lb) {
-                lb.addEventListener('touchstart', e => { touchstartX = e.changedTouches[0].screenX; });
+                lb.addEventListener('touchstart', e => { touchstartX = e.changedTouches[0].screenX; }, {passive: true});
                 lb.addEventListener('touchend', e => { 
                     touchendX = e.changedTouches[0].screenX; 
                     if (touchendX < touchstartX - 40) navigateZoom(1); 
                     if (touchendX > touchstartX + 40) navigateZoom(-1); 
-                });
+                }, {passive: true});
             }
         });
 
         window.onload = carregarCatalogo;
+    </script>
+    
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('PWA: Service Worker ativado com sucesso!'))
+                    .catch(err => console.log('PWA: Erro no Service Worker', err));
+            });
+        }
     </script>
 </body>
 </html>
