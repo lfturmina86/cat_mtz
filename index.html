@@ -80,11 +80,11 @@
                 Coleção Matrezan<span class="wood-accent">.2026</span>
             </div>
             <div class="flex gap-3">
-                <a href="catalogo.pdf" download onclick="return confirm('Deseja fazer o download do catálogo em PDF?')" class="flex items-center gap-2 text-xs sm:text-sm font-bold px-4 py-2 bg-white hover:bg-gray-50 text-gray-800 rounded-full transition-colors border border-gray-200 shadow-sm" title="Baixar Catálogo em PDF">
+                <a href="#" onclick="shareDocument(event, 'catalogo')" class="flex items-center gap-2 text-xs sm:text-sm font-bold px-4 py-2 bg-white hover:bg-gray-50 text-gray-800 rounded-full transition-colors border border-gray-200 shadow-sm" title="Compartilhar Catálogo em PDF">
                     <i class="fas fa-file-pdf text-red-500 text-lg"></i>
                     Catálogo 2026 PDF
                 </a>
-                <a href="acabamentos.pdf" download onclick="return confirm('Deseja fazer o download do arquivo de acabamentos?')" class="flex items-center gap-2 text-xs sm:text-sm font-bold px-4 py-2 bg-gray-900 hover:bg-black text-white rounded-full transition-colors shadow-sm" title="Baixar PDF de Cores e Acabamentos">
+                <a href="#" onclick="shareDocument(event, 'acabamentos')" class="flex items-center gap-2 text-xs sm:text-sm font-bold px-4 py-2 bg-gray-900 hover:bg-black text-white rounded-full transition-colors shadow-sm" title="Compartilhar PDF de Cores e Acabamentos">
                     <i class="fas fa-swatchbook text-gray-300 text-lg"></i>
                     Acabamentos e Tecidos
                 </a>
@@ -474,6 +474,52 @@
             const shareText = `Confira a linha ${linhaAtiva.NOME_LINHA} no Catálogo Matrezan 2026: `;
             if (navigator.share) navigator.share({ title: `Matrezan - ${linhaAtiva.NOME_LINHA}`, text: shareText, url: shareUrl }).catch(console.error);
             else navigator.clipboard.writeText(shareText + shareUrl).then(() => showToast());
+        }
+
+        async function shareDocument(event, type) {
+            event.preventDefault();
+            const fileName = type === 'catalogo' ? 'catalogo.pdf' : 'acabamentos.pdf';
+            const title = type === 'catalogo' ? 'Catálogo Matrezan 2026' : 'Acabamentos e Tecidos';
+            
+            // Fallback imediato se não suportar share de forma alguma
+            if (!navigator.share) {
+                window.open(fileName, '_blank');
+                return;
+            }
+
+            try {
+                showToast("Preparando arquivo para compartilhamento...");
+                
+                // Opção 1: Tenta compartilhar o arquivo físico (para enviar o PDF no WhatsApp)
+                if (navigator.canShare) {
+                    const response = await fetch(fileName);
+                    const blob = await response.blob();
+                    const file = new File([blob], fileName, { type: 'application/pdf' });
+                    
+                    if (navigator.canShare({ files: [file] })) {
+                        await navigator.share({
+                            title: title,
+                            files: [file]
+                        });
+                        return;
+                    }
+                }
+                
+                // Opção 2: Fallback compartilhando apenas o link (URL)
+                const fullUrl = new URL(fileName, window.location.href).href;
+                await navigator.share({
+                    title: title,
+                    text: `Confira o ${title}: `,
+                    url: fullUrl
+                });
+
+            } catch (error) {
+                console.error("Erro ao compartilhar:", error);
+                // Em caso de erro (ex: bloqueio do navegador por demora no fetch), abre em nova aba
+                if (error.name !== 'AbortError') {
+                    window.open(fileName, '_blank');
+                }
+            }
         }
 
         // ==========================================
