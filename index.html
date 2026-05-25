@@ -27,9 +27,9 @@
         body.modal-active { overflow-y: hidden; }
 
         .nav-scroll::-webkit-scrollbar { height: 6px; }
-        .nav-scroll::-webkit-scrollbar-track { background: #f3f4f6; border-radius: 10px; }
-        .nav-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        .nav-scroll::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .nav-scroll::-webkit-scrollbar-track { background: transparent; }
+        .nav-scroll::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+        .nav-scroll::-webkit-scrollbar-thumb:hover { background: #cbd5e1; }
 
         .table-scroll::-webkit-scrollbar { height: 6px; width: 6px; }
         .table-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 6px; }
@@ -105,20 +105,35 @@
     <div class="bg-white border-b sticky top-[68px] z-40 shadow-sm">
         <div class="container mx-auto px-4 py-4">
             <div class="flex flex-col md:flex-row gap-4 justify-between items-center">
-                <nav id="categoryNav" class="flex space-x-3 overflow-x-auto nav-scroll w-full md:w-auto pb-2 md:pb-0 items-center">
-                    <button onclick="setCategory('all')" class="cat-btn whitespace-nowrap px-5 py-2 rounded-full bg-gray-900 text-white text-sm font-medium transition-colors" data-cat="all">TODOS</button>
-                    <button onclick="setCategory('mesas_jantar')" class="cat-btn whitespace-nowrap px-5 py-2 rounded-full border border-gray-300 hover:border-gray-900 text-gray-700 text-sm font-medium transition-colors" data-cat="mesas_jantar">MESAS DE JANTAR</button>
-                    <button onclick="setCategory('cadeiras_jantar')" class="cat-btn whitespace-nowrap px-5 py-2 rounded-full border border-gray-300 hover:border-gray-900 text-gray-700 text-sm font-medium transition-colors" data-cat="cadeiras_jantar">CADEIRAS DE JANTAR</button>
-                    <button onclick="setCategory('poltronas')" class="cat-btn whitespace-nowrap px-5 py-2 rounded-full border border-gray-300 hover:border-gray-900 text-gray-700 text-sm font-medium transition-colors" data-cat="poltronas">POLTRONAS</button>
-                    <button onclick="setCategory('mesas_bistro')" class="cat-btn whitespace-nowrap px-5 py-2 rounded-full border border-gray-300 hover:border-gray-900 text-gray-700 text-sm font-medium transition-colors" data-cat="mesas_bistro">MESAS BISTRÔ</button>
-                    <button onclick="setCategory('banquetas')" class="cat-btn whitespace-nowrap px-5 py-2 rounded-full border border-gray-300 hover:border-gray-900 text-gray-700 text-sm font-medium transition-colors" data-cat="banquetas">BANQUETAS</button>
-                    <button onclick="setCategory('mesas_centro_laterais')" class="cat-btn whitespace-nowrap px-5 py-2 rounded-full border border-gray-300 hover:border-gray-900 text-gray-700 text-sm font-medium transition-colors" data-cat="mesas_centro_laterais">MESAS DE CENTRO/LATERAIS</button>
-                    <button onclick="setCategory('consoles_aparadores')" class="cat-btn whitespace-nowrap px-5 py-2 rounded-full border border-gray-300 hover:border-gray-900 text-gray-700 text-sm font-medium transition-colors" data-cat="consoles_aparadores">CONSOLES/APARADORES</button>
-                    <button onclick="setCategory('bancos_puffs')" class="cat-btn whitespace-nowrap px-5 py-2 rounded-full border border-gray-300 hover:border-gray-900 text-gray-700 text-sm font-medium transition-colors" data-cat="bancos_puffs">BANCOS/PUFFS</button>
-                    <button onclick="setCategory('bares')" class="cat-btn whitespace-nowrap px-5 py-2 rounded-full border border-gray-300 hover:border-gray-900 text-gray-700 text-sm font-medium transition-colors" data-cat="bares">BARES</button>
-                    <button onclick="setCategory('mesas_apoio')" class="cat-btn whitespace-nowrap px-5 py-2 rounded-full border border-gray-300 hover:border-gray-900 text-gray-700 text-sm font-medium transition-colors" data-cat="mesas_apoio">MESAS DE APOIO</button>
-                    <button onclick="setCategory('balcoes_adega')" class="cat-btn whitespace-nowrap px-5 py-2 rounded-full border border-gray-300 hover:border-gray-900 text-gray-700 text-sm font-medium transition-colors" data-cat="balcoes_adega">BALCÕES/ADEGA</button>
-                </nav>
+                <div class="relative flex items-center w-full min-w-0 md:flex-1 md:pr-4">
+                    <button id="navScrollLeft" onclick="scrollCategoryNav(-1)" class="hidden md:flex absolute left-0 z-10 bg-gradient-to-r from-white via-white to-transparent w-12 h-full items-center justify-start text-gray-400 hover:text-gray-800 transition-opacity opacity-0 pointer-events-none -ml-2">
+                        <div class="w-8 h-8 rounded-full bg-white shadow border border-gray-100 flex items-center justify-center">
+                            <i class="fas fa-chevron-left"></i>
+                        </div>
+                    </button>
+                    
+                    <nav id="categoryNav" class="flex space-x-3 overflow-x-auto nav-scroll w-full pb-2 md:pb-0 items-center scroll-smooth px-1">
+                        <button onclick="setCategory('all')" class="cat-btn whitespace-nowrap px-5 py-2 rounded-full bg-gray-900 text-white text-sm font-medium transition-colors" data-cat="all">TODOS</button>
+                        <button onclick="setCategory('mesas_jantar')" class="cat-btn whitespace-nowrap px-5 py-2 rounded-full border border-gray-300 hover:border-gray-900 text-gray-700 text-sm font-medium transition-colors" data-cat="mesas_jantar">MESAS DE JANTAR</button>
+                        <button onclick="setCategory('cadeiras_jantar')" class="cat-btn whitespace-nowrap px-5 py-2 rounded-full border border-gray-300 hover:border-gray-900 text-gray-700 text-sm font-medium transition-colors" data-cat="cadeiras_jantar">CADEIRAS DE JANTAR</button>
+                        <button onclick="setCategory('poltronas')" class="cat-btn whitespace-nowrap px-5 py-2 rounded-full border border-gray-300 hover:border-gray-900 text-gray-700 text-sm font-medium transition-colors" data-cat="poltronas">POLTRONAS</button>
+                        <button onclick="setCategory('mesas_bistro')" class="cat-btn whitespace-nowrap px-5 py-2 rounded-full border border-gray-300 hover:border-gray-900 text-gray-700 text-sm font-medium transition-colors" data-cat="mesas_bistro">MESAS BISTRÔ</button>
+                        <button onclick="setCategory('banquetas')" class="cat-btn whitespace-nowrap px-5 py-2 rounded-full border border-gray-300 hover:border-gray-900 text-gray-700 text-sm font-medium transition-colors" data-cat="banquetas">BANQUETAS</button>
+                        <button onclick="setCategory('mesas_centro_laterais')" class="cat-btn whitespace-nowrap px-5 py-2 rounded-full border border-gray-300 hover:border-gray-900 text-gray-700 text-sm font-medium transition-colors" data-cat="mesas_centro_laterais">MESAS DE CENTRO/LATERAIS</button>
+                        <button onclick="setCategory('consoles_aparadores')" class="cat-btn whitespace-nowrap px-5 py-2 rounded-full border border-gray-300 hover:border-gray-900 text-gray-700 text-sm font-medium transition-colors" data-cat="consoles_aparadores">CONSOLES/APARADORES</button>
+                        <button onclick="setCategory('bancos_puffs')" class="cat-btn whitespace-nowrap px-5 py-2 rounded-full border border-gray-300 hover:border-gray-900 text-gray-700 text-sm font-medium transition-colors" data-cat="bancos_puffs">BANCOS/PUFFS</button>
+                        <button onclick="setCategory('bares')" class="cat-btn whitespace-nowrap px-5 py-2 rounded-full border border-gray-300 hover:border-gray-900 text-gray-700 text-sm font-medium transition-colors" data-cat="bares">BARES</button>
+                        <button onclick="setCategory('mesas_apoio')" class="cat-btn whitespace-nowrap px-5 py-2 rounded-full border border-gray-300 hover:border-gray-900 text-gray-700 text-sm font-medium transition-colors" data-cat="mesas_apoio">MESAS DE APOIO</button>
+                        <button onclick="setCategory('balcoes_adega')" class="cat-btn whitespace-nowrap px-5 py-2 rounded-full border border-gray-300 hover:border-gray-900 text-gray-700 text-sm font-medium transition-colors" data-cat="balcoes_adega">BALCÕES/ADEGA</button>
+                        <button onclick="setCategory('ofertas')" class="cat-btn whitespace-nowrap px-5 py-2 rounded-full border border-gray-300 hover:border-gray-900 text-gray-700 text-sm font-medium transition-colors" data-cat="ofertas">OFERTAS</button>
+                    </nav>
+
+                    <button id="navScrollRight" onclick="scrollCategoryNav(1)" class="hidden md:flex absolute right-0 z-10 bg-gradient-to-l from-white via-white to-transparent w-12 h-full items-center justify-end text-gray-400 hover:text-gray-800 transition-opacity">
+                        <div class="w-8 h-8 rounded-full bg-white shadow border border-gray-100 flex items-center justify-center">
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </button>
+                </div>
 
                 <div class="relative w-full md:w-80 flex-shrink-0">
                     <input type="text" id="searchInput" placeholder="Buscar nome ou referência..." class="w-full bg-gray-50 border border-gray-200 text-gray-800 text-sm rounded-full focus:ring-wood focus:border-wood block pl-10 p-2.5 outline-none transition-colors shadow-inner" />
@@ -1236,6 +1251,38 @@
                     if (touchendX < touchstartX - 40) navigateZoom(1); 
                     if (touchendX > touchstartX + 40) navigateZoom(-1); 
                 }, {passive: true});
+            }
+        });
+
+        // Controle das setas de rolagem do Menu de Categorias (Desktop)
+        function scrollCategoryNav(direction) {
+            const nav = document.getElementById('categoryNav');
+            const scrollAmount = 300; 
+            nav.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const nav = document.getElementById('categoryNav');
+            const leftBtn = document.getElementById('navScrollLeft');
+            const rightBtn = document.getElementById('navScrollRight');
+            
+            if(nav && leftBtn && rightBtn) {
+                const updateArrows = () => {
+                    if(nav.scrollLeft > 5) {
+                        leftBtn.classList.remove('opacity-0', 'pointer-events-none');
+                    } else {
+                        leftBtn.classList.add('opacity-0', 'pointer-events-none');
+                    }
+                    if(nav.scrollWidth > nav.clientWidth && Math.ceil(nav.scrollLeft + nav.clientWidth) < nav.scrollWidth - 5) {
+                        rightBtn.classList.remove('opacity-0', 'pointer-events-none');
+                    } else {
+                        rightBtn.classList.add('opacity-0', 'pointer-events-none');
+                    }
+                };
+                nav.addEventListener('scroll', updateArrows);
+                window.addEventListener('resize', updateArrows);
+                // Aguarda elementos renderizarem para o primeiro check
+                setTimeout(updateArrows, 300);
             }
         });
 
