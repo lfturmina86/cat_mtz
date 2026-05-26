@@ -333,6 +333,31 @@
         </div>
     </div>
 
+    <div id="promoModal" class="fixed inset-0 z-[80] hidden opacity-0 pointer-events-none modal">
+        <div class="absolute inset-0 bg-black bg-opacity-60 transition-opacity backdrop-blur-sm" onclick="closePromoModal()"></div>
+        <div class="flex items-center justify-center min-h-screen px-4 py-4">
+            <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full relative z-10 transform transition-transform scale-95 overflow-hidden">
+                <button onclick="closePromoModal()" class="absolute top-4 right-4 text-white hover:text-gray-200 z-20 bg-black/20 hover:bg-black/40 rounded-full w-8 h-8 flex items-center justify-center transition-colors">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+                <div class="bg-wood p-8 text-center text-white relative overflow-hidden">
+                    <div class="absolute inset-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=600&auto=format&fit=crop')] bg-cover bg-center mix-blend-overlay"></div>
+                    <i class="fas fa-tags text-5xl mb-4 relative z-10"></i>
+                    <h3 class="text-3xl font-bold serif-font relative z-10">Ofertas Exclusivas</h3>
+                </div>
+                <div class="p-8 text-center bg-gray-50">
+                    <p class="text-gray-600 mb-6 text-lg leading-relaxed">Confira nossa nova seleção de produtos com preços especiais.</p>
+                    <button onclick="irParaOfertas()" class="w-full bg-gray-900 text-white font-bold py-3.5 px-6 rounded-full hover:bg-wood transition-colors shadow-lg text-lg flex items-center justify-center gap-2">
+                        <i class="fas fa-arrow-right"></i> Ver Ofertas Agora
+                    </button>
+                    <button onclick="closePromoModal()" class="mt-5 text-sm text-gray-400 hover:text-gray-600 font-medium underline-offset-4 hover:underline transition-all">
+                        Talvez mais tarde
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         // ==========================================
         // VARIÁVEIS GLOBAIS
@@ -384,6 +409,41 @@
                 console.error("Erro:", error);
                 document.getElementById('productGrid').innerHTML = '<p class="col-span-full text-center text-red-500 py-10">Erro de conexão com o banco de dados.</p>';
             }
+        }
+
+        // ==========================================
+        // PROMO MODAL
+        // ==========================================
+        function openPromoModal() {
+            if (!sessionStorage.getItem('promoModalVisto')) {
+                const modal = document.getElementById('promoModal');
+                modal.classList.remove('hidden');
+                setTimeout(() => { 
+                    modal.classList.remove('opacity-0', 'pointer-events-none'); 
+                    document.body.classList.add('modal-active'); 
+                }, 50);
+                sessionStorage.setItem('promoModalVisto', 'true');
+            }
+        }
+
+        function closePromoModal() {
+            const modal = document.getElementById('promoModal');
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            document.body.classList.remove('modal-active');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        function irParaOfertas() {
+            closePromoModal();
+            setCategory('ofertas');
+            
+            setTimeout(() => {
+                const btnOfertas = document.querySelector('.cat-btn[data-cat="ofertas"]');
+                if(btnOfertas) {
+                    btnOfertas.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                }
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 300);
         }
 
         // ==========================================
@@ -679,6 +739,9 @@
         function openModal(id_linha) {
             linhaAtiva = db_linhas.find(l => String(l.ID_LINHA) === String(id_linha));
             if(!linhaAtiva) return;
+
+            // Abre o modal promocional de ofertas caso o usuário ainda não o tenha visto
+            openPromoModal();
 
             combinacaoAtual = {}; 
             atualizarMoodboard();
@@ -1229,12 +1292,15 @@
             }
 
             if (event.key === "Escape") {
+                const promoModal = document.getElementById('promoModal');
                 if (!zoomLightbox.classList.contains('hidden')) {
                     closeZoom();
                 } else if (!techModal.classList.contains('hidden')) {
                     closeTechModal();
                 } else if (!productModal.classList.contains('hidden')) {
                     closeModal();
+                } else if (promoModal && !promoModal.classList.contains('hidden')) {
+                    closePromoModal();
                 }
             }
         });
