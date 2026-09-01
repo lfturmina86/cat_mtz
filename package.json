@@ -1,0 +1,16 @@
+{
+  "name": "cat-mtz",
+  "version": "1.0.0",
+  "description": "Catálogo Virtual - MATREZAN",
+  "scripts": {
+    "build": "echo 'Static site - no build needed'",
+    "dev": "npx serve .",
+    "lint": "echo 'No linter configured'"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@vercel/analytics": "^2.0.1"
+  }
+}
